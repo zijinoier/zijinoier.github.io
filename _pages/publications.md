@@ -1,0 +1,14 @@
+---
+layout: page
+permalink: /publications/
+title: Publications
+description: Publications are listed in reverse chronological order. <br> <b>*</b> denotes  co-first authors.
+nav: true
+nav_order: 1
+---
+<!-- _pages/publications.md -->
+<div class="publications">
+
+{% bibliography -f {{ site.scholar.bibliography }} %}
+
+</div>

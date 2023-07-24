@@ -1,0 +1,146 @@
+- title: General Information
+  type: map
+  contents:
+    - name: Full Name
+      value: Abu Noman Md Sakib
+    - name: Contact
+      value: abunomanmd [dot] sakib [at] gmail [dot] com
+    - name: Languages
+      value: English, Bengali
+
+- title: Education
+  type: time_table
+  contents:
+    - title: Bachelor of Science in Computer Science & Engineering
+      institution: Khulna University of Engineering and Technology, Khulna, Bangladesh
+      year: 2017-2022
+      description:
+        - "CGPA: 3.39/4.00 (Last two years CGPA: 3.66)"
+        - "Thesis: Classification and Segmentation of Brain Hemorrhage from Head CT Scan Images."
+    - title: Higher Secondary Certificate
+      institution: Mirpur Cantonment Public School & College, Dhaka, Bangladesh
+      year: 2015-2016
+      description:
+        - "GPA: 5.0 (Out of 5.0)"
+    - title: Secondary School Certificate
+      institution: Chittagong Collegiate School, Chittagong, Bangladesh
+      year: 2009-2014
+      description:
+        - "GPA: 5.0 (Out of 5.0)"
+
+- title: Work Experience
+  type: time_table
+  contents:
+    - title: Software Engineer
+      institution: Red.Digital Limited
+      year: May,2022-Present
+      description:
+        - Responsible for assigned software developments of Red.Digital Limited.
+        - Worked on HRM Software Frontend (Angular).
+        - Worked on a survey based web solution (React.js).
+        - Developed a learning management system for external client (React.js).
+        - Conducted R&D on survey based applications (Vue, React).
+        - Conducted R&D using Robi Career database (Python, Machine Learning).
+    - title: AI Apprentice (Internship)
+      institution: Intelligent Machines Limited
+      year: May,2019-June,2019
+      description:
+        - Responsible for dataset creation and supervision.
+        - Guiding and managing image data contributors.
+        - Collected and annotated raw data for the AI model.
+        - Communicating with the CEO to ensure daily activities.
+
+- title: Standardized Test Scores
+  type: time_table
+  contents:
+    - title: Graduate Record Examinations (GRE)
+      institution: Overall - 311 (Quant - 162, Verbal - 149, AWA - 3.5)
+      year: June, 2023
+
+    - title: International English Language Testing System (IELTS)
+      institution: Overall - 7.5 (Listening - 8.5, Reading - 7.5, Speaking - 7.5, Writing - 6.5)
+      year: March, 2023
+
+- title: Skills
+  type: list
+  contents:
+    - <span>Programming languages:</span> Python, Javascript, C, C++.
+    - <span>ML Frameworks:</span> Tensorflow, NumPy, SciPy, Pandas.
+    - <span>Web Frameworks:</span> Angular, React, Vue.
+    - <span>Technology:</span> Git, LaTex.
+    - <span>Database:</span> Mysql.
+    - <span>Operating System:</span> Linux, Windows.
+
+- title: Open Source Projects
+  type: time_table
+  contents:
+    - title: <a href="https://github.com/anmspro/Traffic-Signal-Violation-Detection-System">Traffic Signal Violation Detection System</a>
+      year: 2019-now
+      description: A Computer Vision based Traffic Signal Violation Detection System from video footage using YOLOv3 & Tkinter. (GUI Included).
+
+    - title: <a href="https://github.com/anmspro/3D-Ball-Balancing-Game-using-CPP-and-OpenGL">3D Ball Balancing Game using C++ and OpenGL</a>
+      year: 2021-now
+      description: A Computer Graphics based project using C++ and OpenGL. This game was built for Computer Graphics Laboratory.
+
+    - title: <a href="https://github.com/anmspro/Smart-Car-Parking-System">Smart Car Parking System</a>
+      year: 2019-now
+      description: This project aims at providing a confusion free and easy parking. It was built using Arduino Uno.
+
+- title: Honors and Awards
+  type: time_table
+  contents:
+    - year: 2018-2022
+      items:
+        - Government Scholarship in Higher Secondary Certificate Examination (Placed 575th in Dhaka Board).
+    - year: 2017
+      items:
+        - Champion at Fresher League 2017 (Bangla Parliamentary Debate Competition), KUET, Bangladesh.
+    - year: 2014
+      items:
+        - Champion at Inter House Bangla Parliamentary Debate Competition, MCPSC, Dhaka, Bangladesh.
+        - Semifinalist at Inter Cantonment Public Bangla Parliamentary Debate Competition, Bangladesh.
+
+- title: Leadership and Volunteering Activities
+  type: time_table
+  contents:
+    - title: Organizing Secretary
+      institution: KUET Adventure Club
+      year: 2019-2022
+      description:
+        - Conducted various activities on campus impacting 5000+ students.
+
+    - title: Assistant General Secretary
+      institution: CSE Association of KUET,
+      year: 2018-2019
+      description:
+        - Organized annual events within department along with the guidance of seniors and teachers.
+
+    - title: Organizing Volunteer
+      institution: 2nd CSE Bitfest
+      year: Sept, 2019
+
+    - title: Volunteer
+      institution: Voluntary Blood Donation Society of KUET
+      year: 2017-2018
+
+    - title: Organizing Volunteer
+      institution: BACS Regional Programming Camp
+      year: Jan, 2017
+
+# - title: Academic Interests
+#   type: nested_list
+#   contents:
+#     - title: Topic 1.
+#       items:
+#         - Description 1.
+#         - Description 2.
+#     - title: Topic 2.
+#       items:
+#         - Description 1.
+#         - Description 2.
+
+- title: Other Interests
+  type: list
+  contents:
+    - <span>Sports:</span> Football/Soccer, Badminton, Cricket, Table Tennis, Pool.
+    - <span>Hobbies:</span> Traveling, Hiking, Cinematography.
