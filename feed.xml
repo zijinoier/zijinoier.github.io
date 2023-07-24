@@ -1,0 +1,783 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en"><generator uri="https://jekyllrb.com/" version="4.3.2">Jekyll</generator><link href="https://wenlc.cn/feed.xml" rel="self" type="application/atom+xml"/><link href="https://wenlc.cn/" rel="alternate" type="text/html" hreflang="en"/><updated>2023-07-24T05:17:42+00:00</updated><id>https://wenlc.cn/feed.xml</id><title type="html">blank</title><subtitle>Personal website of Licheng Wen, a researcher in the field of autonomous driving and multi-agent systems. </subtitle><entry><title type="html">C++11 新特性</title><link href="https://wenlc.cn/blog/2021/cpp11/" rel="alternate" type="text/html" title="C++11 新特性"/><published>2021-01-27T16:32:05+00:00</published><updated>2021-01-27T16:32:05+00:00</updated><id>https://wenlc.cn/blog/2021/cpp11</id><content type="html" xml:base="https://wenlc.cn/blog/2021/cpp11/"><![CDATA[<h2 id="1-for_each">1. for_each</h2> <p>对于一些collection(vector,list,set,map)可以对其中每个元素执行后面的函数;</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">auto</span> <span class="n">lambda_echo</span> <span class="o">=</span> <span class="p">[](</span><span class="kt">int</span> <span class="n">i</span> <span class="p">)</span> <span class="p">{</span> <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span> <span class="p">};</span>  
+<span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">col</span><span class="p">{</span><span class="mi">20</span><span class="p">,</span><span class="mi">24</span><span class="p">,</span><span class="mi">37</span><span class="p">,</span><span class="mi">42</span><span class="p">,</span><span class="mi">23</span><span class="p">,</span><span class="mi">45</span><span class="p">,</span><span class="mi">37</span><span class="p">};</span>
+<span class="n">for_each</span><span class="p">(</span><span class="n">col</span><span class="p">,</span><span class="n">lambda_echo</span><span class="p">);</span>
+</code></pre></div></div> <h2 id="2-transform">2. Transform</h2> <p><code class="language-plaintext highlighter-rouge">std::transform</code>在指定的范围内应用于给定的操作，并将结果存储在指定的另一个范围内。要使用std::transform函数需要包含<algorithm>头文件。</algorithm></p> <p>以下是<code class="language-plaintext highlighter-rouge">std::transform</code>的两个声明，一个是对应于一元操作，一个是对应于二元操作：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">InputIterator</span><span class="p">,</span> <span class="k">class</span> <span class="nc">OutputIterator</span><span class="p">,</span> <span class="k">class</span> <span class="nc">UnaryOperation</span><span class="p">&gt;</span>
+  <span class="n">OutputIterator</span> <span class="nf">transform</span> <span class="p">(</span><span class="n">InputIterator</span> <span class="n">first1</span><span class="p">,</span> <span class="n">InputIterator</span> <span class="n">last1</span><span class="p">,</span>
+                            <span class="n">OutputIterator</span> <span class="n">result</span><span class="p">,</span> <span class="n">UnaryOperation</span> <span class="n">op</span><span class="p">);</span>
+	
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">InputIterator1</span><span class="p">,</span> <span class="k">class</span> <span class="nc">InputIterator2</span><span class="p">,</span>
+          <span class="k">class</span> <span class="nc">OutputIterator</span><span class="p">,</span> <span class="k">class</span> <span class="nc">BinaryOperation</span><span class="p">&gt;</span>
+  <span class="n">OutputIterator</span> <span class="n">transform</span> <span class="p">(</span><span class="n">InputIterator1</span> <span class="n">first1</span><span class="p">,</span> <span class="n">InputIterator1</span> <span class="n">last1</span><span class="p">,</span>
+                            <span class="n">InputIterator2</span> <span class="n">first2</span><span class="p">,</span> <span class="n">OutputIterator</span> <span class="n">result</span><span class="p">,</span>
+</code></pre></div></div> <p>对于一元操作，将op应用于[first1, last1)范围内的每个元素，并将每个操作返回的值存储在以result开头的范围内。给定的op将被连续调用<code class="language-plaintext highlighter-rouge">last1-first1</code>次。op可以是函数指针或函数对象或lambda表达式。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">op_increase</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span><span class="k">return</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">5</span><span class="p">)};</span>
+<span class="n">std</span><span class="o">::</span><span class="n">transform</span><span class="p">(</span><span class="n">first1</span><span class="p">,</span> <span class="n">last1</span><span class="p">,</span> <span class="n">result</span><span class="p">,</span> <span class="n">op_increase</span><span class="p">);</span>
+</code></pre></div></div> <h2 id="3-auto和decltype联合使用">3. auto和decltype联合使用</h2> <p>考虑一个模板函数</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">U</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">V</span><span class="p">&gt;</span>
+<span class="o">???</span> <span class="n">foo</span><span class="p">(</span><span class="n">U</span> <span class="n">u</span><span class="p">,</span> <span class="n">V</span> <span class="n">v</span><span class="p">){</span>
+    <span class="p">...</span>
+    <span class="k">return</span> <span class="n">u</span><span class="o">*</span><span class="n">v</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>总之我要在这个函数做点事情，最后返回一个u*v类型的东西。返回类型该怎么写？ C++11引入了返回类型后置解决这个问题，</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">U</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">V</span><span class="p">&gt;</span>
+<span class="k">auto</span> <span class="nf">foo</span><span class="p">(</span><span class="n">U</span> <span class="n">u</span><span class="p">,</span> <span class="n">V</span> <span class="n">v</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">decltype</span><span class="p">(</span><span class="n">u</span><span class="o">*</span><span class="n">v</span><span class="p">){</span>
+    <span class="k">return</span> <span class="n">u</span><span class="o">*</span><span class="n">v</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <h2 id="4枚举类">4.枚举类</h2> <p>枚举类（“新的枚举”/“强类型的枚举”）主要用来解决传统的C++枚举的三个问题：</p> <ul> <li>传统C++枚举会被隐式转换为int，这在那些不应被转换为int的情况下可能导致错误</li> <li>传统C++枚举的每一枚举值在其作用域范围内都是可见的，容易导致名称冲突(同名冲突)</li> <li>不可以指定枚举的底层数据类型，这可能会导致代码不容易理解、兼容性问题以及不可以进行前向声明</li> </ul> <p>枚举类（enum）（“强类型枚举”）是强类型的，并且具有类域：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">enum</span> <span class="n">Alert</span> <span class="p">{</span> <span class="n">green</span><span class="p">,</span> <span class="n">yellow</span><span class="p">,</span> <span class="n">election</span><span class="p">,</span> <span class="n">red</span> <span class="p">};</span> <span class="c1">// 传统枚举</span>
+<span class="k">enum</span> <span class="k">class</span> <span class="nc">Color</span> <span class="p">{</span> <span class="n">red</span><span class="p">,</span> <span class="n">blue</span> <span class="p">};</span>   <span class="c1">// 新的具有类域和强类型的枚举类</span>
+<span class="c1">// 它的枚举值在类的外部是不可直接访问的，需加“类名::”</span>
+<span class="c1">//  不会被隐式转换成int</span>
+<span class="k">enum</span> <span class="k">class</span> <span class="nc">TrafficLight</span> <span class="p">{</span> <span class="n">red</span><span class="p">,</span> <span class="n">yellow</span><span class="p">,</span> <span class="n">green</span> <span class="p">};</span>
+<span class="n">Alert</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>   <span class="c1">//  错误，传统枚举不是强类型的，a没有数据类型</span>
+<span class="n">Color</span> <span class="n">c</span> <span class="o">=</span> <span class="mi">7</span><span class="p">;</span>   <span class="c1">// 错误，没有int到Color的隐式转换</span>
+<span class="kt">int</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">red</span><span class="p">;</span>  <span class="c1">// 正确，Alert被隐式转换成int</span>
+<span class="c1">// 在 C++98中是错误的，但是在C++11中正确的</span>
+<span class="kt">int</span> <span class="n">a3</span> <span class="o">=</span> <span class="n">Alert</span><span class="o">::</span><span class="n">red</span><span class="p">;</span>
+<span class="kt">int</span> <span class="n">a4</span> <span class="o">=</span> <span class="n">blue</span><span class="p">;</span>            <span class="c1">// 错误，blue并没有在类域中</span>
+<span class="kt">int</span> <span class="n">a5</span> <span class="o">=</span> <span class="n">Color</span><span class="o">::</span><span class="n">blue</span><span class="p">;</span> <span class="c1">// 错误，没有Color到int的默认转换</span>
+<span class="n">Color</span> <span class="n">a6</span> <span class="o">=</span> <span class="n">Color</span><span class="o">::</span><span class="n">blue</span><span class="p">;</span>   <span class="c1">// 正确</span>
+</code></pre></div></div> <p>正如上面的代码所展示的那样，传统的枚举可以照常工作，但是你现在可以通过提供一个类名来改善枚举的使用，使其成为一个强类型的具有类域的枚举。 同时，他可以保证枚举值所占的字节大小，枚举类的底层数据类型必须是有符号或无符号的整数类型(int/short/char等)，默认情况下是int。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">enum</span> <span class="k">class</span> <span class="nc">Color</span> <span class="o">:</span> <span class="kt">char</span> <span class="p">{</span> <span class="n">red</span><span class="p">,</span> <span class="n">blue</span> <span class="p">};</span> <span class="c1">// 紧凑型表示(一个字节)</span>
+</code></pre></div></div> <h2 id="5-类型转换">5. 类型转换</h2> <p>关于强制类型转换的问题，很多书都讨论过，写的最详细的是C++ 之父的《C++ 的设计和演化》。最好的解决方法就是不要使用C风格的强制类型转换，而是使用标准C++的类型转换符：static_cast, dynamic_cast。 标准C++中有四个类型转换符：<strong>static_cast、dynamic_cast、reinterpret_cast、 const_cast</strong>。</p>]]></content><author><name></name></author><category term="知识学习"/><category term="c++"/><category term="c++11"/><category term="可变参数"/><category term="模板"/><summary type="html"><![CDATA[1. for_each]]></summary></entry><entry><title type="html">泛化之美–C++11可变模版参数的妙用</title><link href="https://wenlc.cn/blog/2021/variadic-template/" rel="alternate" type="text/html" title="泛化之美–C++11可变模版参数的妙用"/><published>2021-01-27T16:20:54+00:00</published><updated>2021-01-27T16:20:54+00:00</updated><id>https://wenlc.cn/blog/2021/variadic-template</id><content type="html" xml:base="https://wenlc.cn/blog/2021/variadic-template/"><![CDATA[<blockquote> <p>本文曾发表于《程序员》2015年2月刊。转载请注明出处。</p> </blockquote> <h2 id="1概述"><strong>1概述</strong></h2> <p>C++11的新特性–可变模版参数（variadic templates）是C++11新增的最强大的特性之一，它对参数进行了高度泛化，它能表示0到任意个数、任意类型的参数。相比C++98/03，类模版和函数模版中只能含固定数量的模版参数，可变模版参数无疑是一个巨大的改进。然而由于可变模版参数比较抽象，使用起来需要一定的技巧，所以它也是C++11中最难理解和掌握的特性之一。虽然掌握可变模版参数有一定难度，但是它却是C++11中最有意思的一个特性，本文希望带领读者由浅入深的认识和掌握这一特性，同时也会通过一些实例来展示可变参数模版的一些用法。 </p> <h2 id="2可变模版参数的展开"><strong>2可变模版参数的展开</strong></h2> <p>可变参数模板和普通模板的语义是一样的，只是写法上稍有区别，声明可变参数模板时需要在typename或class后面带上省略号“…”。比如我们常常这样声明一个可变模版参数：template<typename...>或者template<class...>，一个典型的可变模版参数的定义是这样的：</class...></typename...></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template &lt;class... T&gt;
+void f(T... args);
+</code></pre></div></div> <p>　　上面的可变模版参数的定义当中，省略号的作用有两个： 1.声明一个参数包T… args，这个参数包中可以包含0到任意个模板参数； 2.在模板定义的右边，可以将参数包展开成一个一个独立的参数。</p> <p>　　上面的参数args前面有省略号，所以它就是一个可变模版参数，我们把带省略号的参数称为“参数包”，它里面包含了0到N（N&gt;=0）个模版参数。我们无法直接获取参数包args中的每个参数的，只能通过展开参数包的方式来获取参数包中的每个参数，这是使用可变模版参数的一个主要特点，也是最大的难点，即如何展开可变模版参数。</p> <p>　　可变模版参数和普通的模版参数语义是一致的，所以可以应用于函数和类，即可变模版参数函数和可变模版参数类，然而，模版函数不支持偏特化，所以可变模版参数函数和可变模版参数类展开可变模版参数的方法还不尽相同，下面我们来分别看看他们展开可变模版参数的方法。</p> <h3 id="21可变模版参数函数"><strong>2.1可变模版参数函数</strong></h3> <p>一个简单的可变模版参数函数：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span><span class="o">...</span> <span class="nc">T</span><span class="p">&gt;</span>
+<span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="n">T</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>    
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="k">sizeof</span><span class="p">...(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="c1">//打印变参的个数</span>
+<span class="p">}</span>
+
+<span class="n">f</span><span class="p">();</span>        <span class="c1">//0</span>
+<span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>    <span class="c1">//2</span>
+<span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s">""</span><span class="p">);</span>    <span class="c1">//3</span>
+</code></pre></div></div> <p>上面的例子中，f()没有传入参数，所以参数包为空，输出的size为0，后面两次调用分别传入两个和三个参数，故输出的size分别为2和3。由于可变模版参数的类型和个数是不固定的，所以我们可以传任意类型和个数的参数给函数f。这个例子只是简单的将可变模版参数的个数打印出来，如果我们需要将参数包中的每个参数打印出来的话就需要通过一些方法了。展开可变模版参数函数的方法一般有两种：一种是通过递归函数来展开参数包，另外一种是通过逗号表达式来展开参数包。下面来看看如何用这两种方法来展开参数包。</p> <h4 id="211递归函数方式展开参数包"><strong>2.1.1递归函数方式展开参数包</strong></h4> <p>通过递归函数展开参数包，需要提供一个参数包展开的函数和一个递归终止函数，递归终止函数正是用来终止递归的，来看看下面的例子。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="c1">//递归终止函数</span>
+<span class="kt">void</span> <span class="nf">print</span><span class="p">()</span>
+<span class="p">{</span>
+   <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"empty"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">//展开函数</span>
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="o">...</span><span class="nc">Args</span><span class="p">&gt;</span>
+<span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="n">T</span> <span class="n">head</span><span class="p">,</span> <span class="n">Args</span><span class="p">...</span> <span class="n">rest</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"parameter "</span> <span class="o">&lt;&lt;</span> <span class="n">head</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+   <span class="n">print</span><span class="p">(</span><span class="n">rest</span><span class="p">...);</span>
+<span class="p">}</span>
+
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="n">print</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">);</span>
+   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>上例会输出每一个参数，直到为空时输出empty。展开参数包的函数有两个，一个是递归函数，另外一个是递归终止函数，参数包Args…在展开的过程中递归调用自己，每调用一次参数包中的参数就会少一个，直到所有的参数都展开为止，当没有参数时，则调用非模板函数print终止递归过程。</p> <p>递归调用的过程是这样的:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print(1,2,3,4);
+print(2,3,4);
+print(3,4);
+print(4);
+print();
+</code></pre></div></div> <p>上面的递归终止函数还可以写成这样：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template &lt;class T&gt;
+void print(T t)
+{
+   cout &lt;&lt; t &lt;&lt; endl;
+}
+</code></pre></div></div> <p>修改递归终止函数后，上例中的调用过程是这样的：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print(1,2,3,4);
+print(2,3,4);
+print(3,4);
+print(4);
+</code></pre></div></div> <p>当参数包展开到最后一个参数时递归为止。再看一个通过可变模版参数求和的例子：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">&gt;</span>
+<span class="n">T</span> <span class="nf">sum</span><span class="p">(</span><span class="n">T</span> <span class="n">t</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">t</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="o">...</span> <span class="nc">Types</span><span class="p">&gt;</span>
+<span class="n">T</span> <span class="nf">sum</span> <span class="p">(</span><span class="n">T</span> <span class="n">first</span><span class="p">,</span> <span class="n">Types</span> <span class="p">...</span> <span class="n">rest</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">first</span> <span class="o">+</span> <span class="n">sum</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rest</span><span class="p">...);</span>
+<span class="p">}</span>
+
+<span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">);</span> <span class="c1">//10</span>
+</code></pre></div></div> <p>sum在展开参数包的过程中将各个参数相加求和，参数的展开方式和前面的打印参数包的方式是一样的。</p> <h4 id="212逗号表达式展开参数包"><strong>2.1.2逗号表达式展开参数包</strong></h4> <p>递归函数展开参数包是一种标准做法，也比较好理解，但也有一个缺点,就是必须要一个重载的递归终止函数，即必须要有一个同名的终止函数来终止递归，这样可能会感觉稍有不便。有没有一种更简单的方式呢？其实还有一种方法可以不通过递归方式来展开参数包，这种方式需要借助逗号表达式和初始化列表。比如前面print的例子可以改成这样：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">&gt;</span>
+<span class="kt">void</span> <span class="nf">printarg</span><span class="p">(</span><span class="n">T</span> <span class="n">t</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">t</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="o">...</span><span class="nc">Args</span><span class="p">&gt;</span>
+<span class="kt">void</span> <span class="nf">expand</span><span class="p">(</span><span class="n">Args</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="kt">int</span> <span class="n">arr</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{(</span><span class="n">printarg</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="mi">0</span><span class="p">)...};</span>
+<span class="p">}</span>
+
+<span class="n">expand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">);</span>
+</code></pre></div></div> <p>这个例子将分别打印出1,2,3,4四个数字。这种展开参数包的方式，不需要通过递归终止函数，是直接在expand函数体中展开的, printarg不是一个递归终止函数，只是一个处理参数包中每一个参数的函数。这种就地展开参数包的方式实现的关键是逗号表达式。我们知道逗号表达式会按顺序执行逗号前面的表达式，比如：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d = (a = b, c); 
+</code></pre></div></div> <p>这个表达式会按顺序执行：b会先赋值给a，接着括号中的逗号表达式返回c的值，因此d将等于c。</p> <p>expand函数中的逗号表达式：(printarg(args), 0)，也是按照这个执行顺序，先执行printarg(args)，再得到逗号表达式的结果0。同时还用到了C++11的另外一个特性——初始化列表，通过初始化列表来初始化一个变长数组, {(printarg(args), 0)…}将会展开成((printarg(arg1),0), (printarg(arg2),0), (printarg(arg3),0), etc… )，最终会创建一个元素值都为0的数组int arr[sizeof…(Args)]。由于是逗号表达式，在创建数组的过程中会先执行逗号表达式前面的部分printarg(args)打印出参数，也就是说在构造int数组的过程中就将参数包展开了，这个数组的目的纯粹是为了在数组构造的过程展开参数包。我们可以把上面的例子再进一步改进一下，将函数作为参数，就可以支持lambda表达式了，从而可以少写一个递归终止函数了，具体代码如下：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">F</span><span class="p">,</span> <span class="k">class</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span><span class="kt">void</span> <span class="nf">expand</span><span class="p">(</span><span class="k">const</span> <span class="n">F</span><span class="o">&amp;</span> <span class="n">f</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span><span class="n">args</span><span class="p">)</span> 
+<span class="p">{</span>
+  <span class="c1">//这里用到了完美转发，关于完美转发，读者可以参考笔者在上一期程序员中的文章《通过4行代码看右值引用》</span>
+  <span class="n">initializer_list</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{(</span><span class="n">f</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span> <span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)),</span><span class="mi">0</span><span class="p">)...};</span>
+<span class="p">}</span>
+<span class="n">expand</span><span class="p">([](</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;},</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">);</span>
+</code></pre></div></div> <p>上面的例子将打印出每个参数，这里如果再使用C++14的新特性泛型lambda表达式的话，可以写更泛化的lambda表达式了：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expand([](auto i){cout&lt;&lt;i&lt;&lt;endl;}, 1,2.0,”test”);
+</code></pre></div></div> <h3 id="22可变模版参数类"><strong>2.2可变模版参数类</strong></h3> <p>可变参数模板类是一个带可变模板参数的模板类，比如C++11中的元祖std::tuple就是一个可变模板类，它的定义如下：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt; class... Types &gt;
+class tuple;
+</code></pre></div></div> <p>这个可变参数模板类可以携带任意类型任意个数的模板参数：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::tuple&lt;int&gt; tp1 = std::make_tuple(1);
+std::tuple&lt;int, double&gt; tp2 = std::make_tuple(1, 2.5);
+std::tuple&lt;int, double, string&gt; tp3 = std::make_tuple(1, 2.5, “”);
+</code></pre></div></div> <p>可变参数模板的模板参数个数可以为0个，所以下面的定义也是也是合法的：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::tuple&lt;&gt; tp;
+</code></pre></div></div> <p>可变参数模板类的参数包展开的方式和可变参数模板函数的展开方式不同，可变参数模板类的参数包展开需要通过模板特化和继承方式去展开，展开方式比可变参数模板函数要复杂。下面我们来看一下展开可变模版参数类中的参数包的方法。</p> <h4 id="221模版偏特化和递归方式来展开参数包"><strong>2.2.1模版偏特化和递归方式来展开参数包</strong></h4> <p>可变参数模板类的展开一般需要定义两到三个类，包括类声明和偏特化的模板类。如下方式定义了一个基本的可变参数模板类：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//前向声明</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="p">;</span>
+
+<span class="c1">//基本定义</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">First</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Rest</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="o">&lt;</span><span class="n">First</span><span class="p">,</span> <span class="n">Rest</span><span class="p">...</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="k">enum</span> <span class="p">{</span> <span class="n">value</span> <span class="o">=</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">First</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">+</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">Rest</span><span class="p">...</span><span class="o">&gt;::</span><span class="n">value</span> <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="c1">//递归终止</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Last</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="o">&lt;</span><span class="n">Last</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="k">enum</span> <span class="p">{</span> <span class="n">value</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">Last</span><span class="p">)</span> <span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div></div> <p>　　这个Sum类的作用是在编译期计算出参数包中参数类型的size之和，通过sum&lt;int,double,short&gt;::value就可以获取这3个类型的size之和为14。这是一个简单的通过可变参数模板类计算的例子，可以看到一个基本的可变参数模板应用类由三部分组成，第一部分是：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt;typename... Args&gt; struct sum
+</code></pre></div></div> <p>它是前向声明，声明这个sum类是一个可变参数模板类；第二部分是类的定义：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt;typename First, typename... Rest&gt;
+struct Sum&lt;First, Rest...&gt;
+{
+    enum { value = Sum&lt;First&gt;::value + Sum&lt;Rest...&gt;::value };
+};
+</code></pre></div></div> <p>它定义了一个部分展开的可变模参数模板类，告诉编译器如何递归展开参数包。第三部分是特化的递归终止类：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt;typename Last&gt; struct sum&lt;last&gt;
+{
+    enum { value = sizeof (First) };
+}
+</code></pre></div></div> <p>通过这个特化的类来终止递归：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt;typename First, typename... Args&gt;struct sum;
+</code></pre></div></div> <p>这个前向声明要求sum的模板参数至少有一个，因为可变参数模板中的模板参数可以有0个，有时候0个模板参数没有意义，就可以通过上面的声明方式来限定模板参数不能为0个。上面的这种三段式的定义也可以改为两段式的，可以将前向声明去掉，这样定义：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">First</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Rest</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span>
+<span class="p">{</span>
+    <span class="k">enum</span> <span class="p">{</span> <span class="n">value</span> <span class="o">=</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">First</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">+</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">Rest</span><span class="p">...</span><span class="o">&gt;::</span><span class="n">value</span> <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Last</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="o">&lt;</span><span class="n">Last</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="k">enum</span><span class="p">{</span> <span class="n">value</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Last</span><span class="p">)</span> <span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div></div> <p>上面的方式只要一个基本的模板类定义和一个特化的终止函数就行了，而且限定了模板参数至少有一个。</p> <p>递归终止模板类可以有多种写法，比如上例的递归终止模板类还可以这样写：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span> <span class="k">struct</span> <span class="nc">sum</span><span class="p">;</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">First</span><span class="p">,</span> <span class="n">typenameLast</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">sum</span><span class="o">&lt;</span><span class="n">First</span><span class="p">,</span> <span class="n">Last</span><span class="o">&gt;</span>
+<span class="p">{</span> 
+    <span class="k">enum</span><span class="p">{</span> <span class="n">value</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">First</span><span class="p">)</span> <span class="o">+</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Last</span><span class="p">)</span> <span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div></div> <p>在展开到最后两个参数时终止。</p> <p>还可以在展开到0个参数时终止：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt;&gt;struct sum&lt;&gt; { enum{ value = 0 }; };
+</code></pre></div></div> <p>还可以使用std::integral_constant来消除枚举定义value。利用std::integral_constant可以获得编译期常量的特性，可以将前面的sum例子改为这样：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//前向声明</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">First</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="p">;</span>
+
+<span class="c1">//基本定义</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">First</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Rest</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="o">&lt;</span><span class="n">First</span><span class="p">,</span> <span class="n">Rest</span><span class="p">...</span><span class="o">&gt;</span> <span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">integral_constant</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">First</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">+</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">Rest</span><span class="p">...</span><span class="o">&gt;::</span><span class="n">value</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="p">};</span>
+
+<span class="c1">//递归终止</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Last</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="o">&lt;</span><span class="n">Last</span><span class="o">&gt;</span> <span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">integral_constant</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Last</span><span class="p">)</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="p">};</span>
+<span class="n">sum</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">,</span><span class="kt">short</span><span class="o">&gt;::</span><span class="n">value</span><span class="p">;</span><span class="c1">//值为14</span>
+</code></pre></div></div> <h4 id="222继承方式展开参数包"><strong>2.2.2继承方式展开参数包</strong></h4> <p>还可以通过继承方式来展开参数包，比如下面的例子就是通过继承的方式去展开参数包：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//整型序列的定义</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">...&gt;</span>
+<span class="k">struct</span> <span class="nc">IndexSeq</span><span class="p">{};</span>
+
+<span class="c1">//继承方式，开始展开参数包</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span><span class="p">...</span> <span class="n">Indexes</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">MakeIndexes</span> <span class="o">:</span> <span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;</span> <span class="p">{};</span>
+
+<span class="c1">// 模板特化，终止展开参数包的条件</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">...</span> <span class="n">Indexes</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">MakeIndexes</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="n">typedefIndexSeq</span><span class="o">&lt;</span><span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;</span> <span class="n">type</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">using</span> <span class="n">T</span> <span class="o">=</span> <span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;::</span><span class="n">type</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span><span class="k">typeid</span><span class="p">(</span><span class="n">T</span><span class="p">).</span><span class="n">name</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>其中MakeIndexes的作用是为了生成一个可变参数模板类的整数序列，最终输出的类型是：struct IndexSeq&lt;0,1,2&gt;。</p> <p>MakeIndexes继承于自身的一个特化的模板类，这个特化的模板类同时也在展开参数包，这个展开过程是通过继承发起的，直到遇到特化的终止条件展开过程才结束。MakeIndexes&lt;1,2,3&gt;::type的展开过程是这样的：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;</span> <span class="o">:</span> <span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">{}</span>
+<span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="o">:</span> <span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">{}</span>
+<span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="o">:</span> <span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="k">typedef</span> <span class="n">IndexSeq</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">type</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>通过不断的继承递归调用，最终得到整型序列IndexSeq&lt;0, 1, 2&gt;。</p> <p>如果不希望通过继承方式去生成整形序列，则可以通过下面的方式生成。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span><span class="p">...</span> <span class="n">Indexes</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">MakeIndexes3</span>
+<span class="p">{</span>
+    <span class="k">using</span> <span class="n">type</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">MakeIndexes3</span><span class="o">&lt;</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;::</span><span class="n">type</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">...</span> <span class="n">Indexes</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">MakeIndexes3</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="k">typedef</span> <span class="n">IndexSeq</span><span class="o">&lt;</span><span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;</span> <span class="n">type</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div> <p>我们看到了如何利用递归以及偏特化等方法来展开可变模版参数，那么实际当中我们会怎么去使用它呢？我们可以用可变模版参数来消除一些重复的代码以及实现一些高级功能，下面我们来看看可变模版参数的一些应用。</p> <h2 id="3可变参数模版消除重复代码"><strong>3可变参数模版消除重复代码</strong></h2> <p>C++11之前如果要写一个泛化的工厂函数，这个工厂函数能接受任意类型的入参，并且参数个数要能满足大部分的应用需求的话，我们不得不定义很多重复的模版定义，比如下面的代码：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T0</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">T0</span> <span class="n">arg0</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">arg0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T0</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T1</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">T0</span> <span class="n">arg0</span><span class="p">,</span> <span class="n">T1</span> <span class="n">arg1</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T0</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T1</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T2</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">T0</span> <span class="n">arg0</span><span class="p">,</span> <span class="n">T1</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">T2</span> <span class="n">arg2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T0</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T1</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T2</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T3</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">T0</span> <span class="n">arg0</span><span class="p">,</span> <span class="n">T1</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">T2</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">T3</span> <span class="n">arg3</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T0</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T1</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T2</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T3</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T4</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">T0</span> <span class="n">arg0</span><span class="p">,</span> <span class="n">T1</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">T2</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">T3</span> <span class="n">arg3</span><span class="p">,</span> <span class="n">T4</span> <span class="n">arg4</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">,</span> <span class="n">arg4</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">struct</span> <span class="nc">A</span>
+<span class="p">{</span>
+    <span class="n">A</span><span class="p">(</span><span class="kt">int</span><span class="p">){}</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">B</span>
+<span class="p">{</span>
+    <span class="n">B</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">){}</span>
+<span class="p">};</span>
+<span class="n">A</span><span class="o">*</span> <span class="n">pa</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">B</span><span class="o">*</span> <span class="n">pb</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">&lt;</span><span class="n">B</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+</code></pre></div></div> <p>可以看到这个泛型工厂函数存在大量的重复的模板定义，并且限定了模板参数。用可变模板参数可以消除重复，同时去掉参数个数的限制，代码很简洁， 通过可变参数模版优化后的工厂函数如下：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="err">…</span>  <span class="n">Args</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="err">…</span> <span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="err">…</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">A</span><span class="o">*</span> <span class="n">pa</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">B</span><span class="o">*</span> <span class="n">pb</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">&lt;</span><span class="n">B</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+</code></pre></div></div> <h2 id="4可变参数模版实现泛化的delegate"><strong>4可变参数模版实现泛化的delegate</strong></h2> <p>C++中没有类似C#的委托，我们可以借助可变模版参数来实现一个。C#中的委托的基本用法是这样的：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">delegate</span> <span class="kt">int</span> <span class="nf">AggregateDelegate</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">);</span><span class="c1">//声明委托类型</span>
+
+<span class="kt">int</span> <span class="nf">Add</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">){</span><span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;}</span>
+<span class="kt">int</span> <span class="nf">Sub</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">){</span><span class="k">return</span> <span class="n">x</span><span class="o">-</span><span class="n">y</span><span class="p">;}</span>
+
+<span class="n">AggregateDelegate</span> <span class="n">add</span> <span class="o">=</span> <span class="n">Add</span><span class="p">;</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span><span class="c1">//调用委托对象求和</span>
+<span class="n">AggregateDelegate</span> <span class="n">sub</span> <span class="o">=</span> <span class="n">Sub</span><span class="p">;</span>
+<span class="n">sub</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span><span class="c1">// 调用委托对象相减</span>
+</code></pre></div></div> <p>C#中的委托的使用需要先定义一个委托类型，这个委托类型不能泛化，即委托类型一旦声明之后就不能再用来接受其它类型的函数了，比如这样用：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int Fun(int x, int y, int z){return x+y+z;}
+int Fun1(string s, string r){return s.Length+r.Length; }
+AggregateDelegate fun = Fun; //编译报错，只能赋值相同类型的函数
+AggregateDelegate fun1 = Fun1;//编译报错，参数类型不匹配
+</code></pre></div></div> <p>这里不能泛化的原因是声明委托类型的时候就限定了参数类型和个数，在C++11里不存在这个问题了，因为有了可变模版参数，它就代表了任意类型和个数的参数了，下面让我们来看一下如何实现一个功能更加泛化的C++版本的委托（这里为了简单起见只处理成员函数的情况，并且忽略const、volatile和const volatile成员函数的处理）。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="nc">R</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span>
+<span class="k">class</span>  <span class="nc">MyDelegate</span>
+<span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">MyDelegate</span><span class="p">(</span><span class="n">T</span><span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="n">R</span>  <span class="p">(</span><span class="n">T</span><span class="o">::*</span><span class="n">f</span><span class="p">)(</span><span class="n">Args</span><span class="p">...)</span> <span class="p">)</span><span class="o">:</span><span class="n">m_t</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="n">m_f</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="p">{}</span>
+
+    <span class="n">R</span> <span class="nf">operator</span><span class="p">()(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span> 
+    <span class="p">{</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">m_t</span><span class="o">-&gt;*</span><span class="n">m_f</span><span class="p">)(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="p">...);</span>
+    <span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+    <span class="n">T</span><span class="o">*</span> <span class="n">m_t</span><span class="p">;</span>
+    <span class="n">R</span>  <span class="p">(</span><span class="n">T</span><span class="o">::*</span><span class="n">m_f</span><span class="p">)(</span><span class="n">Args</span><span class="p">...);</span>
+<span class="p">};</span>   
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="nc">R</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span>
+<span class="n">MyDelegate</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Args</span><span class="p">...</span><span class="o">&gt;</span> <span class="n">CreateDelegate</span><span class="p">(</span><span class="n">T</span><span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="n">R</span> <span class="p">(</span><span class="n">T</span><span class="o">::*</span><span class="n">f</span><span class="p">)(</span><span class="n">Args</span><span class="p">...))</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">MyDelegate</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Args</span><span class="p">...</span><span class="o">&gt;</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="nc">A</span>
+<span class="p">{</span>
+    <span class="kt">void</span> <span class="n">Fun</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
+    <span class="kt">void</span> <span class="nf">Fun1</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">double</span> <span class="n">j</span><span class="p">){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">A</span> <span class="n">a</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">d</span> <span class="o">=</span> <span class="n">CreateDelegate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">A</span><span class="o">::</span><span class="n">Fun</span><span class="p">);</span> <span class="c1">//创建委托</span>
+    <span class="n">d</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//调用委托，将输出1</span>
+    <span class="k">auto</span> <span class="n">d1</span> <span class="o">=</span> <span class="n">CreateDelegate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">A</span><span class="o">::</span><span class="n">Fun1</span><span class="p">);</span> <span class="c1">//创建委托</span>
+    <span class="n">d1</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">);</span> <span class="c1">//调用委托，将输出3.5</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>MyDelegate实现的关键是内部定义了一个能接受任意类型和个数参数的“万能函数”：R (T::*m_f)(Args…)，正是由于可变模版参数的特性，所以我们才能够让这个m_f接受任意参数。</p> <h2 id="5总结"><strong>5总结</strong></h2> <p>使用可变模版参数的这些技巧相信读者看了会有耳目一新之感，使用可变模版参数的关键是如何展开参数包，展开参数包的过程是很精妙的，体现了泛化之美、递归之美，正是因为它具有神奇的“魔力”，所以我们可以更泛化的去处理问题，比如用它来消除重复的模版定义，用它来定义一个能接受任意参数的“万能函数”等。其实，可变模版参数的作用远不止文中列举的那些作用，它还可以和其它C++11特性结合起来，比如type_traits、std::tuple等特性，发挥更加强大的威力，将在后面模板元编程的应用中介绍。</p>]]></content><author><name></name></author><category term="知识学习"/><category term="c++"/><category term="c++11"/><category term="可变参数"/><category term="模板"/><summary type="html"><![CDATA[本文曾发表于《程序员》2015年2月刊。转载请注明出处。]]></summary></entry><entry><title type="html">开发环境代码化:VSCode配置远程Docker容器作为开发环境</title><link href="https://wenlc.cn/blog/2020/docker-vscode/" rel="alternate" type="text/html" title="开发环境代码化:VSCode配置远程Docker容器作为开发环境"/><published>2020-12-20T16:12:32+00:00</published><updated>2020-12-20T16:12:32+00:00</updated><id>https://wenlc.cn/blog/2020/docker-vscode</id><content type="html" xml:base="https://wenlc.cn/blog/2020/docker-vscode/"><![CDATA[<blockquote> <p>快速设置VSCode使用远程服务器(通常是Linux)上的Docker容器来作为开发环境</p> </blockquote> <h2 id="优点">优点</h2> <ul> <li>本地桌面干净： 只有docker客户端~</li> <li>开发环境代码化：Dockerfile</li> <li>切换环境只需切换容器</li> </ul> <h2 id="远程主机配置">远程主机配置</h2> <h3 id="安装-docker-engine">安装 Docker Engine</h3> <p>参考<a href="https://docs.docker.com/engine/install/">这里</a>官方文档</p> <h3 id="docker开启远程端口">Docker开启远程端口</h3> <p>在远程主机上：</p> <ol> <li> <p>创建文件 <code class="language-plaintext highlighter-rouge">daemon.json</code> 到目录 <code class="language-plaintext highlighter-rouge">/etc/docker</code>:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{"hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"]}
+</code></pre></div> </div> </li> <li> <p>创建文件 <code class="language-plaintext highlighter-rouge">/etc/systemd/system/docker.service.d/override.conf</code>:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[Service]
+ExecStart=
+ExecStart=/usr/bin/dockerd
+</code></pre></div> </div> </li> <li> <p>重启docker：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>systemctl daemon-reload
+systemctl restart docker.service
+</code></pre></div> </div> <h2 id="本地桌面配置">本地桌面配置</h2> </li> </ol> <h3 id="安装-open-ssh-客户端">安装 Open SSH 客户端</h3> <h4 id="linuxmac">Linux/Mac</h4> <p>直接用包管理器安装open-ssh</p> <h4 id="win7">Win7</h4> <ol> <li> <p>下载编译好的open ssh二进制包：<a href="https://github.com/PowerShell/Win32-OpenSSH/releases">这里</a></p> </li> <li> <p>解压到 C:OpenSSH</p> </li> <li> <p>把 C:OpenSSH 加到系统环境变量Path上（需要注销再登录才能生效）</p> </li> <li> <p>打开cmd，运行</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>C:&gt; ssh-agent
+</code></pre></div> </div> <p>确保能找到</p> </li> </ol> <h4 id="win10">Win10</h4> <p>巨硬厂从Win10开始终于向社区靠拢，系统自带open ssh了，参考这个 <a href="https://docs.microsoft.com/en-us/windows-server/administration/openssh/openssh_install_firstuse">教程</a></p> <h3 id="启用ssh-agent">启用ssh-agent</h3> <h4 id="linuxmac-1">Linux/Mac</h4> <p>安装了open-ssh以后默认自动运行，如果没有:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>eval "$(ssh-agent -s)"
+</code></pre></div></div> <h4 id="win7-1">Win7</h4> <p><code class="language-plaintext highlighter-rouge">PowerShell</code> 窗口里面运行 （administrator 模式）:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Set-Service ssh-agent -StartupType Automatic
+</code></pre></div></div> <p>然后 [Windows Task Manger] —&gt; [Services] 找到ssh-agent，启动它</p> <h4 id="win10-1">Win10</h4> <p>添加了openssh以后，应该也是自动运行的</p> <h3 id="生成-ssh-秘钥对">生成 ssh 秘钥对</h3> <p>运行 <code class="language-plaintext highlighter-rouge">ssh-keygen</code></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-keygen
+</code></pre></div></div> <p>一路回车，默认生成两个文件:</p> <ul> <li><code class="language-plaintext highlighter-rouge">id_rsa</code></li> <li><code class="language-plaintext highlighter-rouge">id_rsa.pub</code></li> </ul> <p>把这个<code class="language-plaintext highlighter-rouge">id_rsa.pub</code> 传送到远程主机，复制成文件： <code class="language-plaintext highlighter-rouge">~/.ssh/authorized_keys</code> 如果远程主机上这个<code class="language-plaintext highlighter-rouge">authorized_keys</code>已经存在，就添加到后面</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cat id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys
+</code></pre></div></div> <p>本地运行如下命令加上私钥</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh-add id_rsa
+</code></pre></div></div> <p>测试一下，无需密码直接ssh连接到远程主机:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ssh &lt;user&gt;@&lt;host&gt;
+</code></pre></div></div> <h3 id="本地配置-docker-客户端">本地配置 Docker 客户端</h3> <h4 id="安装docker">安装Docker</h4> <h5 id="linuxmac-2">Linux/Mac</h5> <p>直接包管理器安装，就这么简单。。。</p> <h5 id="windows">Windows</h5> <p>下面二选一</p> <ul> <li>方法一：安装<a href="https://hub.docker.com/editions/community/docker-ce-desktop-windows">docker desktop</a>, — <strong>其实不需要这么大而全</strong></li> <li>方法二：下载 <a href="https://github.com/StefanScherer/docker-cli-builder/releases/">docker.exe</a> 放到Path包含的路径下就行了， 比如c:windows</li> </ul> <h4 id="配置本地使用远程-docker-服务">配置本地使用远程 Docker 服务</h4> <p>创建一个context：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker context create &lt;context name&gt; --docker "host=ssh://&lt;user&gt;@&lt;host&gt;"
+</code></pre></div></div> <p>切换到上面这个context：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker context use &lt;context name&gt;
+</code></pre></div></div> <p>测试一下：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker info
+</code></pre></div></div> <p>这里会输出和在远程主机上运行 <code class="language-plaintext highlighter-rouge">docker info</code> 一样的结果， 实际上这里docker本地只是一个客户端，连接到远程主机上的docker服务。</p> <h3 id="visual-studio-code">Visual Studio Code</h3> <h4 id="安装-vscode">安装 VSCode</h4> <p>这里 <a href="https://code.visualstudio.com/">VSCode</a> 打开 VSCode， 安装插件：</p> <ul> <li>Extensions -&gt; Search Remote -&gt; <code class="language-plaintext highlighter-rouge">Remote Development</code></li> <li>Extensions -&gt; Search Docker -&gt; <code class="language-plaintext highlighter-rouge">Docker</code></li> </ul> <h2 id="开始一个项目">开始一个项目!</h2> <blockquote> <p>这里有两个方式，个人觉得第一个更（省）好（事）</p> </blockquote> <h3 id="方式一-attach-remote-host-container">方式一： Attach Remote Host Container</h3> <h4 id="本地-vscode-访问远程容器">本地 VSCode 访问远程容器</h4> <h4 id="切换-docker-context">切换 Docker context</h4> <p>打开VSCode，按下 <code class="language-plaintext highlighter-rouge">ctrl+shift+p</code> 运行 <code class="language-plaintext highlighter-rouge">docker contexts use</code> , 选择上面创建的docker context.</p> <h4 id="连接容器">连接容器</h4> <p>按下 <code class="language-plaintext highlighter-rouge">ctrl+shift+p</code> 运行 <code class="language-plaintext highlighter-rouge">Remote-Containers:Attach to Running Container...</code>, 选择上面创建的容器名字。</p> <p>连接成功后，按下 <code class="language-plaintext highlighter-rouge">ctrl+k, ctr+o</code>, 你会发现VSCode弹出的不是本地目录，而是容器内部的目录！现在VSCode只是一个客户端，一切操作都在容器中了！</p> <p>尝试一下。选择上面创建的 /workspaces/newproj，新建一个main.py，保存。再去主机上看，~/newproj/main.py就躺在那。</p> <p>现在，可以愉快地在容（工）器（地）里面编（搬）码（砖）了。</p> <h5 id="方式二---微软官方推荐的办麻法烦略">方式二 - 微软官方推荐的<a href="https://code.visualstudio.com/docs/remote/containers-advanced">办（麻）法（烦）</a>，略。</h5>]]></content><author><name></name></author><category term="教程"/><category term="Docker"/><category term="VS code"/><category term="Cloud"/><summary type="html"><![CDATA[快速设置VSCode使用远程服务器(通常是Linux)上的Docker容器来作为开发环境 优点 本地桌面干净： 只有docker客户端~ 开发环境代码化：Dockerfile 切换环境只需切换容器 远程主机配置 安装 Docker Engine 参考这里官方文档 Docker开启远程端口 在远程主机上： 创建文件 daemon.json 到目录 /etc/docker: {"hosts": ["tcp://0.0.0.0:2375", "unix:///var/run/docker.sock"]} 创建文件 /etc/systemd/system/docker.service.d/override.conf: [Service] ExecStart=ExecStart=/usr/bin/dockerd 重启docker： systemctl daemon-reload systemctl restart docker.service 本地桌面配置 安装 Open SSH 客户端 Linux/Mac 直接用包管理器安装open-ssh Win7 下载编译好的open ssh二进制包：这里 解压到 C:OpenSSH 把 C:OpenSSH 加到系统环境变量Path上（需要注销再登录才能生效） 打开cmd，运行 C:&gt; ssh-agent 确保能找到 Win10 巨硬厂从Win10开始终于向社区靠拢，系统自带open ssh了，参考这个 教程 启用ssh-agent Linux/Mac 安装了open-ssh以后默认自动运行，如果没有: eval "$(ssh-agent -s)" Win7 PowerShell 窗口里面运行 （administrator 模式）: Set-Service ssh-agent -StartupType Automatic 然后 [Windows Task Manger] —&gt; [Services] 找到ssh-agent，启动它 Win10 添加了openssh以后，应该也是自动运行的 生成 ssh 秘钥对 运行 ssh-keygen ssh-keygen 一路回车，默认生成两个文件: id_rsa id_rsa.pub 把这个id_rsa.pub 传送到远程主机，复制成文件： ~/.ssh/authorized_keys 如果远程主机上这个authorized_keys已经存在，就添加到后面 cat id_rsa.pub &gt;&gt; ~/.ssh/authorized_keys 本地运行如下命令加上私钥 ssh-add id_rsa 测试一下，无需密码直接ssh连接到远程主机: ssh &lt;user&gt;@&lt;host&gt; 本地配置 Docker 客户端 安装Docker Linux/Mac 直接包管理器安装，就这么简单。。。 Windows 下面二选一 方法一：安装docker desktop, — 其实不需要这么大而全 方法二：下载 docker.exe 放到Path包含的路径下就行了， 比如c:windows 配置本地使用远程 Docker 服务 创建一个context： docker context create &lt;context name&gt; --docker "host=ssh://&lt;user&gt;@&lt;host&gt;" 切换到上面这个context： docker context use &lt;context name&gt; 测试一下： docker info 这里会输出和在远程主机上运行 docker info 一样的结果， 实际上这里docker本地只是一个客户端，连接到远程主机上的docker服务。 Visual Studio Code 安装 VSCode 这里 VSCode 打开 VSCode， 安装插件： Extensions -&gt; Search Remote -&gt; Remote Development Extensions -&gt; Search Docker -&gt; Docker 开始一个项目! 这里有两个方式，个人觉得第一个更（省）好（事） 方式一： Attach Remote Host Container 本地 VSCode 访问远程容器 切换 Docker context 打开VSCode，按下 ctrl+shift+p 运行 docker contexts use , 选择上面创建的docker context. 连接容器 按下 ctrl+shift+p 运行 Remote-Containers:Attach to Running Container..., 选择上面创建的容器名字。 连接成功后，按下 ctrl+k, ctr+o, 你会发现VSCode弹出的不是本地目录，而是容器内部的目录！现在VSCode只是一个客户端，一切操作都在容器中了！ 尝试一下。选择上面创建的 /workspaces/newproj，新建一个main.py，保存。再去主机上看，~/newproj/main.py就躺在那。 现在，可以愉快地在容（工）器（地）里面编（搬）码（砖）了。 方式二 - 微软官方推荐的办（麻）法（烦），略。]]></summary></entry><entry><title type="html">实验室NAS解决方案</title><link href="https://wenlc.cn/blog/2020/nas/" rel="alternate" type="text/html" title="实验室NAS解决方案"/><published>2020-11-26T16:12:32+00:00</published><updated>2020-11-26T16:12:32+00:00</updated><id>https://wenlc.cn/blog/2020/nas</id><content type="html" xml:base="https://wenlc.cn/blog/2020/nas/"><![CDATA[<h2 id="影音播放-emby">影音播放 Emby</h2> <p>在<a href="https://emby.media/linux-server.html">这个网址</a>下载Ubuntu Server，执行</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dpkg <span class="nt">-i</span> emby-server-deb_<span class="k">*</span>.deb
+</code></pre></div></div> <p>打开后自动配置在 http://localhost:8096 端口上。</p> <p>配置媒体库后，可能需要对目标目录配置至少读权限:</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chown </span>emby.emby /media/sean/1TB <span class="nt">-R</span>
+<span class="nb">chmod </span>755 /media/sean/1TB
+</code></pre></div></div> <h3 id="破解premium版">破解Premium版：</h3> <ul> <li><code class="language-plaintext highlighter-rouge">sudo -i</code> 切换为 <code class="language-plaintext highlighter-rouge">root</code> 用户</li> <li>使用 <code class="language-plaintext highlighter-rouge">systemctl stop emby-server.service</code> 结束 emby 进程</li> <li>使用 <code class="language-plaintext highlighter-rouge">find / -name EmbyServer</code> 找到 emby，比如这里我的 emby 所在目录为/opt/emby-server/system/</li> <li>使用 <code class="language-plaintext highlighter-rouge">wget -O /opt/emby-server/system/System.Net.Http.dll 'http://file.neko.re/EmbyCrack/unix-x64/System.Net.Http.dll' --no-check-certificate</code>（注意替换掉命令中的 emby 所在目录）下载破解程序集替换原有程序</li> <li>启动 Emby 进程 <code class="language-plaintext highlighter-rouge">systemctl start emby-server.service</code></li> </ul> <p>PC 浏览器：安装 URLRedirector(<a href="https://chrome.google.com/webstore/detail/maolmdhneopinciaokgohljhpdedekee">Chrome</a>, Firefox) 插件，添加用户规则 原始地址 https://mb3admin.com ，目标地址 https://crackemby.neko.re ，然后确认并保存，别忘了勾选重定向。 在网页版设置-Premium 内输入任意字符即可。</p> <ul> <li>Android &amp; TV：使用Emby 破解版本，转自<a href="https://www.nas2x.com/threads/emby-for-androidtv-1-7-92g.1469/">nas2X</a>: <a href="https://wwa.lanzous.com/b0f1vlhri">蓝奏云下载</a> ,密码:i06m</li> <li>IOS：<a href="https://neko.re/archives/208.html">破解教程</a></li> </ul> <h2 id="私有云-nextcloud">私有云 Nextcloud</h2> <p>安装Docker环境：</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-fsSL</span> https://get.docker.com | bash <span class="nt">-s</span> docker <span class="nt">--mirror</span> Aliyun
+</code></pre></div></div> <p>使用helloworld环境检查：</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>docker run hello-world
+</code></pre></div></div> <p>安装官方镜像并运行：</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>docker run <span class="nt">-d</span> <span class="se">\</span>
+<span class="nt">-v</span> nextcloud:/var/www/html <span class="se">\</span>
+<span class="nt">-v</span> apps:/var/www/html/custom_apps <span class="se">\</span>
+<span class="nt">-v</span> config:/var/www/html/config <span class="se">\</span>
+<span class="nt">-v</span> /media/wayne/Wayne/data:/var/www/html/data <span class="se">\ </span> <span class="c">#此处data最好也使用外面挂载</span>
+<span class="nt">-v</span> /media/wayne/Wayne:/media/Wayne <span class="se">\</span>
+<span class="nt">-v</span> /media/wayne/Academic:/media/Academic <span class="se">\</span>
+<span class="nt">--name</span> nextcloud <span class="se">\</span>
+<span class="nt">-p</span> 8080:80 nextcloud
+</code></pre></div></div> <p>成功后在 http://localhost:8080 端口上运行。</p> <p>针对只能在localhost而不能在局域网下登陆的Trusted Domain问题:</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#登陆docker终端</span>
+<span class="nb">sudo </span>docker <span class="nb">exec</span> <span class="nt">-it</span> <span class="nt">-u</span> root nextcloud  bash
+<span class="c">#登陆后</span>
+vim config/config.php 一般在/var/www/html目录下
+</code></pre></div></div> <p>增加<code class="language-plaintext highlighter-rouge">trusted_domains</code>如下：</p> <div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s1">'trusted_domains'</span> <span class="o">=&gt;</span> 
+  <span class="k">array</span> <span class="p">(</span>
+          <span class="mi">0</span> <span class="o">=&gt;</span> <span class="s1">'localhost:8080'</span><span class="p">,</span>
+          <span class="mi">1</span> <span class="o">=&gt;</span> <span class="s1">'192.168.3.13:8080'</span><span class="p">,</span>
+  <span class="p">),</span>
+</code></pre></div></div> <p>无需重启即可正常。</p> <p>连接不上应用商店：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Change line 404 in 3rdparty/guzzlehttp/guzzle/src/Handler/CurlFactory.php
+
+increase 1000 to 10000
+
+In lib/private/App/AppStore/Fetcher/Fetcher.php
+
+On line 98 change the timeout from 10 to 30 or 90
+
+in lib/private/Http/Client.php
+
+On line 66 change the timeout from 30 to 90
+
+These changes migh work for you if your connection is slow. They will also invalidate the code checks so nextcloud will complain on the update page.
+</code></pre></div></div> <h2 id="相册piwigo">相册Piwigo</h2> <p>安装docker-compose</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip3 <span class="nb">install </span>docker-compose
+</code></pre></div></div> <p>下载Piwigo:</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com:xmanyou/piwigo-docker.git
+</code></pre></div></div> <p>进入piwigo目录修改<code class="language-plaintext highlighter-rouge">docker-compose.yml</code></p> <div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="na">version</span><span class="pi">:</span> <span class="s2">"</span><span class="s">3"</span>
+<span class="na">services</span><span class="pi">:</span>
+  <span class="na">piwigo</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">linuxserver/piwigo</span>
+    <span class="na">network_mode</span><span class="pi">:</span> <span class="s">bridge</span>
+    <span class="na">volumes</span><span class="pi">:</span>
+    <span class="c1">#这里为挂载已有相册文件夹到gallery下</span>
+      <span class="pi">-</span> <span class="s">&lt;path-to-photo&gt;:/config/www/gallery/galleries/Phone_photo</span>
+    <span class="na">ports</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">8899:80</span>
+    <span class="na">links</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">db</span>
+
+  <span class="na">db</span><span class="pi">:</span>
+    <span class="na">image</span><span class="pi">:</span> <span class="s">mysql:5</span>
+    <span class="na">network_mode</span><span class="pi">:</span> <span class="s">bridge</span>
+    <span class="na">environment</span><span class="pi">:</span>
+      <span class="na">MYSQL_USER</span><span class="pi">:</span> <span class="s2">"</span><span class="s">piwigo"</span>
+      <span class="na">MYSQL_PASSWORD</span><span class="pi">:</span> <span class="s2">"</span><span class="s">piwigo"</span>
+      <span class="na">MYSQL_DATABASE</span><span class="pi">:</span> <span class="s2">"</span><span class="s">piwigo"</span>
+      <span class="na">MYSQL_RANDOM_ROOT_PASSWORD</span><span class="pi">:</span> <span class="s2">"</span><span class="s">true"</span>
+</code></pre></div></div> <p>启动：</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker-compose up <span class="nt">-d</span>
+</code></pre></div></div> <p>安装：</p> <p>镜像启动后，需要先执行Piwigo的安装，打开页面：<a href="http://localhost:8899/">http://localhost:8899</a></p> <p>数据库配置如下：</p> <ul> <li>数据库主机: db (注意，这里要填镜像里的service名，而不是localhost)</li> <li>数据库用户: piwigo (mysql db user)</li> <li>数据库密码: piwigo (mysql db password)</li> <li>数据库名: piwigo (mysql db name)</li> </ul> <p>管理员信息自行配置。</p> <p>点击底部安装按钮。</p> <p>同步：</p> <p>点击<code class="language-plaintext highlighter-rouge">管理员-工具-同步</code></p>]]></content><author><name></name></author><category term="教程"/><category term="Docker"/><category term="NAS"/><category term="Emby"/><category term="NextCloud"/><category term="Cloud"/><summary type="html"><![CDATA[影音播放 Emby 在这个网址下载Ubuntu Server，执行 dpkg -i emby-server-deb_*.deb 打开后自动配置在 http://localhost:8096 端口上。]]></summary></entry><entry><title type="html">Ipopt安装指北</title><link href="https://wenlc.cn/blog/2020/ipopt-1/" rel="alternate" type="text/html" title="Ipopt安装指北"/><published>2020-10-02T21:48:52+00:00</published><updated>2020-10-02T21:48:52+00:00</updated><id>https://wenlc.cn/blog/2020/ipopt-1</id><content type="html" xml:base="https://wenlc.cn/blog/2020/ipopt-1/"><![CDATA[<p>安装 Ipopt</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>wget https://www.coin-or.org/download/source/Ipopt/Ipopt-3.12.7.zip 
+<span class="nv">$ </span>unzip Ipopt-3.12.7.zip 
+<span class="nv">$ </span><span class="nb">rm </span>Ipopt-3.12.7.zip
+<span class="nv">$ </span><span class="nb">cd </span>Ipopt-3.12.7
+<span class="nv">$ </span>./configure
+......
+configure: Main configuration of Ipopt successful
+<span class="nv">$ </span>make
+<span class="nv">$ </span>make <span class="nb">test</span>
+<span class="nv">$ </span>make <span class="nb">install</span>
+</code></pre></div></div> <p>参考：https://www.jianshu.com/p/4cdaa93d460b</p> <p>参考：https://github.com/bapaden/ipopt-cmake-demo</p> <p>下载 HSL MA21求解器 :</p> <p>http://www.hsl.rl.ac.uk/ipopt/ https://github.com/casadi/casadi/wiki/Obtaining-HSL</p> <p>没有学校邮箱的同学，可以选择下载个人版的。</p> <p>为了避免后续问题，建议安装源码版本的。 </p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#确保安装环境</span>
+<span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>libblas3 libblas-dev liblapack3 liblapack-dev gfortran
+<span class="c">#方式2：源代码编译</span>
+<span class="nv">$ </span><span class="nb">tar</span> <span class="nt">-xf</span> coinhsl-archive-2014.01.17.tar.gz
+<span class="nv">$ </span><span class="nb">cd </span>Ipopt-3.12.7/ThirdParty/HSL
+<span class="nv">$ </span><span class="nb">ln</span> <span class="nt">-s</span> ../../../coinhsl-archive-2014.01.17/ coinhsl
+<span class="nv">$ </span>./configure <span class="nt">--enable-loadable-library</span>
+<span class="c">#出现</span>
+configure: Configuration of ThirdPartyHSL successful
+<span class="nv">$ </span>make <span class="nb">install</span> 
+</code></pre></div></div> <p>在$ make test 过程中出现问题：</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 出现错误：</span>
+Exception of <span class="nb">type</span>: OPTION_INVALID <span class="k">in </span>file <span class="s2">"IpAlgBuilder.cpp"</span> at line 271:
+Exception message: Selected linear solver MA27 not available.
+Tried to obtain MA27 from shared library <span class="s2">"libhsl.so"</span>, but the following error occured:
+libhsl.so: cannot open shared object file: No such file or directory
+
+<span class="c"># 解决：</span>
+<span class="c"># 将lib copy到根目录下：</span>
+<span class="nv">$ </span><span class="nb">cd </span>Ipopt-3.12.7/ThirdParty/HSL/lib
+<span class="nv">$ </span><span class="nb">ln</span> <span class="nt">-s</span> libcoinhsl.so.1.5.6 libhsl.so
+<span class="nv">$ </span><span class="nb">sudo cp</span> <span class="nt">-rd</span> <span class="k">*</span> /usr/local/lib
+<span class="nv">$ </span><span class="nb">export </span><span class="nv">LD_LIBRARY_PATH</span><span class="o">=</span><span class="nv">$LD_LIBRARY_PATH</span>:/usr/local/lib
+<span class="c">#$ env | grep LD #确认设置好环境变量</span>
+<span class="nv">$ </span><span class="nb">cd </span>Ipopt-3.12.7/lib
+<span class="nv">$ </span><span class="nb">sudo cp</span> <span class="k">*</span> /usr/local/lib/
+</code></pre></div></div> <p>回到IPOPT环境下进行编译</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ make test
+$ make install
+</code></pre></div></div> <p>编译成功后，可以看到目录下有这几个文件夹”bin”, “lib” and “include”</p> <p>有时候需要安装CppAd，<a href="https://zoomadmin.com/HowToInstall/UbuntuPackage/cppad">安装方法</a>：</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt-get update <span class="nt">-y</span>
+<span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> cppad
+</code></pre></div></div> <p>没有装CppAd可能会出现下面的问题：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>example.cpp:1:33: fatal error: cppad/ipopt/solve.hpp: No such file or directory
+</code></pre></div></div> <p>出现问题：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/include/cppad/ipopt/solve_callback.hpp:16:40: fatal error: coin/IpIpoptApplication.hpp: No such file or directory
+</code></pre></div></div> <p>解决办法：(参考：https://zhuanlan.zhihu.com/p/34650692)</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo cp</span> ~/Ipopt-3.12.7/include/<span class="k">*</span> /usr/local/include
+</code></pre></div></div> <p>AMPL 的C++ API</p> <p>方法：https://ampl.com/api/latest/cpp/getting-started.html</p> <p>下载：https://ampl.com/products/api/</p> <p>学习例子参考：</p> <p>1）https://github.com/mez/model_predictive_controller_cpp</p> <p>2）https://github.com/tianchenji/CarND-MPC-Project</p>]]></content><author><name></name></author><category term="教程"/><category term="Ipopt"/><category term="ubuntu"/><summary type="html"><![CDATA[安装 Ipopt]]></summary></entry><entry><title type="html">C++ 中集合及其交集和并集</title><link href="https://wenlc.cn/blog/2020/c-set/" rel="alternate" type="text/html" title="C++ 中集合及其交集和并集"/><published>2020-08-24T00:09:45+00:00</published><updated>2020-08-24T00:09:45+00:00</updated><id>https://wenlc.cn/blog/2020/c-set</id><content type="html" xml:base="https://wenlc.cn/blog/2020/c-set/"><![CDATA[<p>在数学中，集合是最基本的概念之一。编程时，我们不可避免地会涉及到集合及其相关操作。在 C++ 中，标准模板库（STL）提供了 <code class="language-plaintext highlighter-rouge">std::set</code>/<code class="language-plaintext highlighter-rouge">std::unordered_set</code> 两种传统意义上的集合（除此之外，还有 <code class="language-plaintext highlighter-rouge">std::multiset</code> 和 <code class="language-plaintext highlighter-rouge">std::unordered_multiset</code>）。其中，<code class="language-plaintext highlighter-rouge">std::set</code>（和 <code class="language-plaintext highlighter-rouge">std::multiset</code>）定义在头文件 <code class="language-plaintext highlighter-rouge">set</code> 当中，从 C++98 起就有支持；而 <code class="language-plaintext highlighter-rouge">std::unordered_set</code>（和 <code class="language-plaintext highlighter-rouge">std::unordered_multiset</code>）则定义在头文件 <code class="language-plaintext highlighter-rouge">unordered_set</code> 当中，从 C++11 开始支持。</p> <p>此篇我们讨论如何在 C++ 中集合如何进行交集和并集操作。</p> <h2 id="stdset-和-stdunordered_set-简介"><code class="language-plaintext highlighter-rouge">std::set</code> 和 <code class="language-plaintext highlighter-rouge">std::unordered_set</code> 简介</h2> <p>在 C++ 标准中，<code class="language-plaintext highlighter-rouge">std::set</code> 是<strong>基于平衡二叉树</strong>的（经典的 SGI STL 以红黑树实现），因而是有序的。以恰当的方式，比如以 <code class="language-plaintext highlighter-rouge">std::set</code> 的迭代器，遍历，可以得到有序的结果。在 C++ 标准中，<code class="language-plaintext highlighter-rouge">std::unordered_set</code> 则是<strong>基于哈希表</strong>的。因此，遍历 <code class="language-plaintext highlighter-rouge">std::unordered_set</code> 得到的顺序是不被保证的。<code class="language-plaintext highlighter-rouge">std::unordered_set</code> 的插入、查找、计数等操作的时间复杂度是 O(1)。</p> <blockquote> <p>如果你更喜欢 <code class="language-plaintext highlighter-rouge">hash_set</code> 这个名字，你也可以借助 C++11 的 <code class="language-plaintext highlighter-rouge">using</code> 关键字的新功能，将 <code class="language-plaintext highlighter-rouge">hash_set</code> 作为 <code class="language-plaintext highlighter-rouge">unordered_set</code> 的别名。</p> </blockquote> <p>因为 <code class="language-plaintext highlighter-rouge">std::set</code> 和 <code class="language-plaintext highlighter-rouge">std::unordered_set</code> 底层使用了不同的数据结构，它们对外表现出来的性能也不相同。<code class="language-plaintext highlighter-rouge">std::set</code> 的插入、查找、计数等操作的时间复杂度是 O(log⁡n)。<code class="language-plaintext highlighter-rouge">std::unordered_set</code> 的插入、查找、计数等操作的时间复杂度是 O(1)。因此，在集合中元素的顺序很重要时，可以考虑使用 <code class="language-plaintext highlighter-rouge">set::set</code> 来保存元素；当顺序相对不重要，但会反复进行插入、查找等操作时，则应考虑使用 <code class="language-plaintext highlighter-rouge">set::unordered_set</code>。</p> <p>我们用下面这段代码来演示 <code class="language-plaintext highlighter-rouge">std::set</code> 和 <code class="language-plaintext highlighter-rouge">std::unordered_set</code> 的用法。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string&gt;</span><span class="cp">
+</span>
+<span class="cp">#ifdef HASH_       
+#include</span> <span class="cpf">&lt;unordered_set&gt;</span><span class="cp">
+#else  // HASH_
+#include</span> <span class="cpf">&lt;set&gt;</span><span class="cp">
+#endif
+</span>
+<span class="k">namespace</span> <span class="n">test</span> <span class="p">{</span>
+<span class="cp">#ifdef HASH_        
+</span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Key</span><span class="p">,</span>
+          <span class="k">typename</span> <span class="nc">Hash</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">hash</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">&gt;,</span>
+          <span class="k">typename</span> <span class="n">KeyEqual</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">equal_to</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;</span><span class="p">,</span>
+          <span class="k">typename</span> <span class="n">Allocator</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">allocator</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;&gt;</span>
+<span class="k">using</span> <span class="n">set</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">unordered_set</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">,</span> <span class="n">Hash</span><span class="p">,</span> <span class="n">KeyEqual</span><span class="p">,</span> <span class="n">Allocator</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="cp">#else  // HASH_
+</span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Key</span><span class="p">,</span>
+          <span class="k">typename</span> <span class="nc">Compare</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">less</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">&gt;,</span>
+          <span class="k">typename</span> <span class="n">Allocator</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">allocator</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;&gt;</span>
+<span class="k">using</span> <span class="n">set</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">,</span> <span class="n">Compare</span><span class="p">,</span> <span class="n">Allocator</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="cp">#endif  // HASH_
+</span><span class="p">}</span>  <span class="c1">// namespace test</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">test</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span> <span class="n">set</span><span class="p">{</span><span class="s">"Hello"</span><span class="p">,</span> <span class="s">"world"</span><span class="p">,</span> <span class="s">"!"</span><span class="p">};</span>          
+    <span class="n">set</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">"hello"</span><span class="p">);</span>                                        
+    <span class="n">set</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="s">"world"</span><span class="p">);</span>                                        
+    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">i</span> <span class="o">:</span> <span class="n">set</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span><span class="p">;</span>                                          
+        <span class="k">if</span> <span class="p">((</span><span class="n">set</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="p">(</span><span class="n">set</span><span class="p">.</span><span class="n">find</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">!=</span> <span class="n">set</span><span class="p">.</span><span class="n">end</span><span class="p">()))</span> <span class="p">{</span>  
+            <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"</span><span class="se">\t</span><span class="s">YES!</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>当定义 <code class="language-plaintext highlighter-rouge">HASH_</code> 时，可能的输出为：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ g++ -std=c++11 foo.cpp -DHASH_
+$ ./a.out
+hello   YES!
+!       YES!
+world   YES!
+Hello   YES!
+</code></pre></div></div> <p>当不定义 <code class="language-plaintext highlighter-rouge">HASH_</code> 时，输出应为：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ g++ -std=c++11 foo.cpp
+$ ./a.out
+!       YES!
+Hello   YES!
+hello   YES!
+world   YES!
+</code></pre></div></div> <p>不难发现，不论是使用 <code class="language-plaintext highlighter-rouge">std::set</code> 还是 <code class="language-plaintext highlighter-rouge">std::unordered_set</code>，重复插入的 <code class="language-plaintext highlighter-rouge">"hello"</code> 在集合中都只存在一份；此外，<code class="language-plaintext highlighter-rouge">std::set</code> 是有序的，而 <code class="language-plaintext highlighter-rouge">std::unordered_set</code> 是无序的。另一方面，我们发现，<strong>使用 <code class="language-plaintext highlighter-rouge">set.count(i) &gt; 0</code> 和 <code class="language-plaintext highlighter-rouge">set.find(i) != set.end()</code> 判断集合中是否存在元素 <code class="language-plaintext highlighter-rouge">i</code> 是等价的。</strong></p> <h2 id="标准库提供的-stdset_intersection-和-stdset_union">标准库提供的 <code class="language-plaintext highlighter-rouge">std::set_intersection</code> 和 <code class="language-plaintext highlighter-rouge">std::set_union</code></h2> <p>标准库提供了 <a href="http://en.cppreference.com/w/cpp/algorithm/set_intersection"><code class="language-plaintext highlighter-rouge">std::set_intersection</code></a> 和 <a href="http://en.cppreference.com/w/cpp/algorithm/set_union"><code class="language-plaintext highlighter-rouge">std::set_union</code></a> 两个函数，用于对容器内的元素进行集合求交、求并，而后将得到的结果保存在 <code class="language-plaintext highlighter-rouge">OutputIt</code> 对应的容器当中。这两个函数定义在头文件 <code class="language-plaintext highlighter-rouge">algorithm</code> 当中。</p> <p>我们用下面这段代码演示这两个函数的用法。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;iterator&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;algorithm&gt;</span><span class="cp">
+</span>
+<span class="cp">#ifdef HASH_
+#include</span> <span class="cpf">&lt;unordered_set&gt;</span><span class="cp">
+#else  // HASH_
+#include</span> <span class="cpf">&lt;set&gt;</span><span class="cp">
+#endif
+</span>
+<span class="k">namespace</span> <span class="n">test</span> <span class="p">{</span>
+<span class="cp">#ifdef HASH_
+</span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Key</span><span class="p">,</span>
+          <span class="k">typename</span> <span class="nc">Hash</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">hash</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">&gt;,</span>
+          <span class="k">typename</span> <span class="n">KeyEqual</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">equal_to</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;</span><span class="p">,</span>
+          <span class="k">typename</span> <span class="n">Allocator</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">allocator</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;&gt;</span>
+<span class="k">using</span> <span class="n">set</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">unordered_set</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">,</span> <span class="n">Hash</span><span class="p">,</span> <span class="n">KeyEqual</span><span class="p">,</span> <span class="n">Allocator</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="cp">#else  // HASH_
+</span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Key</span><span class="p">,</span>
+          <span class="k">typename</span> <span class="nc">Compare</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">less</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">&gt;,</span>
+          <span class="k">typename</span> <span class="n">Allocator</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">allocator</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;&gt;</span>
+<span class="k">using</span> <span class="n">set</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">,</span> <span class="n">Compare</span><span class="p">,</span> <span class="n">Allocator</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="cp">#endif  // HASH_
+</span><span class="p">}</span>  <span class="c1">// namespace test</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">test</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">lhs</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">};</span>                             
+    <span class="n">test</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">rhs</span><span class="p">{</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">};</span>                            
+    <span class="n">test</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">result</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="n">set_intersection</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">lhs</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span>               
+                          <span class="n">rhs</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">rhs</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span>               
+                          <span class="n">std</span><span class="o">::</span><span class="n">inserter</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">result</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span> 
+    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">i</span> <span class="o">:</span> <span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="sc">' '</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
+
+    <span class="n">result</span><span class="p">.</span><span class="n">clear</span><span class="p">();</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">set_union</span><span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">lhs</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span>                     
+                   <span class="n">rhs</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">rhs</span><span class="p">.</span><span class="n">end</span><span class="p">(),</span>                     
+                   <span class="n">std</span><span class="o">::</span><span class="n">inserter</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">result</span><span class="p">.</span><span class="n">end</span><span class="p">()));</span>        
+    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">i</span> <span class="o">:</span> <span class="n">result</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="sc">' '</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>如此一来，我们应有可能的输出：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ g++ -std=c++11 foo.cpp -DHASH_
+$ ./a.out
+
+5 6 1 2 3 4
+$ g++ -std=c++11 foo.cpp
+$ ./a.out
+3 4
+1 2 3 4 5 6
+</code></pre></div></div> <p>不难发现，<strong>当使用 <code class="language-plaintext highlighter-rouge">std::unordered_set</code> 时，函数 <code class="language-plaintext highlighter-rouge">std::set_intersection</code> 工作不正常（<code class="language-plaintext highlighter-rouge">std::set_union</code> 恰好看起来正常，实际也不正常）</strong>。当使用 <code class="language-plaintext highlighter-rouge">std::set</code> 时，由于基于平衡二叉树的集合是有序的，因此两个函数工作正常。</p> <p>由于 <code class="language-plaintext highlighter-rouge">std::set_intersection</code> 和 <code class="language-plaintext highlighter-rouge">std::set_union</code> 接受的输入是迭代器；<strong>事实上，这两个函数不光能对集合求交集和并集，还能接收任意有序的序列的迭代器并求交集和并集。</strong>可见，虽然名字是「集合交集」和「集合并集」，但这两个函数的行为与我们默认的交集和并集的概念并不一致。更有甚者，由于这两个函数要求容器有序，所以不能作用在 <code class="language-plaintext highlighter-rouge">std::unoredered_set</code> 类型的对象上。因此，我们可以考虑定义自己的求交、求并函数。</p> <h2 id="定义自己的求交求并函数">定义自己的求交、求并函数</h2> <p>我们以下面的例子呈现我们自己定义的求交、求并函数。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="cp">#ifdef HASH_
+#include</span> <span class="cpf">&lt;unordered_set&gt;</span><span class="cp">
+#else  // HASH_
+#include</span> <span class="cpf">&lt;set&gt;</span><span class="cp">
+#endif
+</span>
+<span class="k">namespace</span> <span class="n">test</span> <span class="p">{</span>
+<span class="cp">#ifdef HASH_
+</span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Key</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">Hash</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">hash</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">&gt;,</span>
+          <span class="k">typename</span> <span class="n">KeyEqual</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">equal_to</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;</span><span class="p">,</span>
+          <span class="k">typename</span> <span class="n">Allocator</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">allocator</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;&gt;</span>
+<span class="k">using</span> <span class="n">set</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">unordered_set</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">,</span> <span class="n">Hash</span><span class="p">,</span> <span class="n">KeyEqual</span><span class="p">,</span> <span class="n">Allocator</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="cp">#else   // HASH_
+</span><span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Key</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">Compare</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">less</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">&gt;,</span>
+          <span class="k">typename</span> <span class="n">Allocator</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">allocator</span><span class="o">&lt;</span><span class="n">Key</span><span class="o">&gt;&gt;</span>
+<span class="k">using</span> <span class="n">set</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="n">Key</span><span class="p">,</span> <span class="n">Compare</span><span class="p">,</span> <span class="n">Allocator</span><span class="o">&gt;</span><span class="p">;</span>
+<span class="cp">#endif  // HASH_
+</span><span class="p">}</span>  <span class="c1">// namespace test</span>
+
+<span class="k">namespace</span> <span class="n">setop</span> <span class="p">{</span>
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Set</span><span class="p">&gt;</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="n">Set</span> <span class="n">set_union</span><span class="p">(</span><span class="k">const</span> <span class="n">Set</span><span class="o">&amp;</span> <span class="n">lhs</span><span class="p">,</span> <span class="k">const</span> <span class="n">Set</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">Set</span> <span class="n">uset</span><span class="p">{</span><span class="n">lhs</span><span class="p">};</span>
+  <span class="n">uset</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">rhs</span><span class="p">.</span><span class="n">begin</span><span class="p">(),</span> <span class="n">rhs</span><span class="p">.</span><span class="n">end</span><span class="p">());</span>
+  <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">uset</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Set</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">Key</span> <span class="o">=</span> <span class="k">typename</span> <span class="nc">Set</span><span class="o">::</span><span class="n">value_type</span><span class="p">&gt;</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="n">Set</span> <span class="nf">set_intersection</span><span class="p">(</span><span class="k">const</span> <span class="n">Set</span><span class="o">&amp;</span> <span class="n">lhs</span><span class="p">,</span> <span class="k">const</span> <span class="n">Set</span><span class="o">&amp;</span> <span class="n">rhs</span><span class="p">)</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">lhs</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="n">rhs</span><span class="p">.</span><span class="n">size</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">Set</span> <span class="n">iset</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="n">Key</span><span class="o">&amp;</span> <span class="n">key</span> <span class="o">:</span> <span class="n">lhs</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">rhs</span><span class="p">.</span><span class="n">count</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">iset</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">iset</span><span class="p">);</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="n">set_intersection</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">lhs</span><span class="p">);</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+<span class="p">}</span>  <span class="c1">// namespace setop</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="n">test</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">lhs</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">};</span>
+  <span class="n">test</span><span class="o">::</span><span class="n">set</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">rhs</span><span class="p">{</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">};</span>
+
+  <span class="k">const</span> <span class="k">auto</span> <span class="n">iset</span> <span class="o">=</span> <span class="n">setop</span><span class="o">::</span><span class="n">set_intersection</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">);</span>
+  <span class="k">const</span> <span class="k">auto</span> <span class="n">uset</span> <span class="o">=</span> <span class="n">setop</span><span class="o">::</span><span class="n">set_union</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">);</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">i</span> <span class="o">:</span> <span class="n">iset</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="sc">' '</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
+
+  <span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="n">i</span> <span class="o">:</span> <span class="n">uset</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="sc">' '</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>如此一来，我们有可能的输出：</p> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>g++ <span class="nt">-std</span><span class="o">=</span>c++11 foo.cpp <span class="nt">-DHASH_</span>
+<span class="nv">$ </span>./a.out
+3 4
+5 6 1 2 3 4
+<span class="nv">$ </span>g++ <span class="nt">-std</span><span class="o">=</span>c++11 foo.cpp
+<span class="nv">$ </span>./a.out
+3 4
+1 2 3 4 5 6
+</code></pre></div></div> <p>不难发现，两个函数工作良好。</p>]]></content><author><name></name></author><category term="知识学习"/><category term="c++"/><category term="c++11"/><category term="set"/><category term="std"/><summary type="html"><![CDATA[在数学中，集合是最基本的概念之一。编程时，我们不可避免地会涉及到集合及其相关操作。在 C++ 中，标准模板库（STL）提供了 std::set/std::unordered_set 两种传统意义上的集合（除此之外，还有 std::multiset 和 std::unordered_multiset）。其中，std::set（和 std::multiset）定义在头文件 set 当中，从 C++98 起就有支持；而 std::unordered_set（和 std::unordered_multiset）则定义在头文件 unordered_set 当中，从 C++11 开始支持。]]></summary></entry><entry><title type="html">Ubuntu迁移Home文件夹到新分区</title><link href="https://wenlc.cn/blog/2020/move-home/" rel="alternate" type="text/html" title="Ubuntu迁移Home文件夹到新分区"/><published>2020-08-14T17:28:48+00:00</published><updated>2020-08-14T17:28:48+00:00</updated><id>https://wenlc.cn/blog/2020/move-home</id><content type="html" xml:base="https://wenlc.cn/blog/2020/move-home/"><![CDATA[<p>由于home文件夹较大,且其默认是在系统盘下的. 当系统盘空间不足时,我们可以将Home文件夹移至新磁盘下的新分区内.</p> <h1 id="overview">Overview</h1> <p>This guide offers detailed instructions for migrating your home directory into its own dedicated partition. Setting up /home on a separate partition is beneficial because your settings, files, and desktop will be maintained if you upgrade, (re)install Ubuntu or another distro. This works because /home has a subdirectory for each user’s settings and files which contain all the data &amp; settings of that user. Telling Ubuntu to use an existing home partition can be done by selecting “Manual Partitioning” during the installation of Ubuntu and specifying that you want your home partitions mount point to be /home, <strong>ensure you mark your /home partition not be formatted in the process</strong>. You should also make sure the usernames you enter for accounts during installation match usernames that existed in a previous installation.</p> <p>This guide will follow these 8 basic steps:</p> <ol> <li>Set-up your new partition</li> <li>Find the uuid (=address) of the new partition</li> <li>Backup and edit your fstab to mount the new partition as /media/home (just for the time being) and reboot.</li> <li>Use rsync to migrate all data from /home into /media/home</li> <li>Check copying worked!</li> <li>Move /home to /old_home to avoid confusion later!</li> <li>Edit fstab again so the new partition mounts as /home instead of as /media/home</li> <li>Reboot or remount all. Check system seems to be working well</li> <li>Delete the /old_home after a while</li> </ol> <p>The guide is written in such a way so that at any point in time if there is a system failure, power outage or random restart that it will not have a negative impact on the system and <em>SHOULD</em> safeguard against the possibility of the user accidentally deleting their home directory in the process.</p> <h1 id="creating-a-new-partition">Creating a new partition</h1> <p>Setting up /home on a separate partition is beneficial because your settings, files, and desktop will be maintained if you upgrade, (re)install Ubuntu or another distro. This works because /home has a subdirectory for each user’s settings and files which contain all the data &amp; settings of that user. Also, fresh installs for linux typically like to wipe whatever partition they are being installed to so either the data &amp; settings need to be backed-up elsewhere or else avoid the fuss each time by having /home on a different partition.</p> <h2 id="setup-partitions">Setup Partitions</h2> <p>建立新分区可以使用gparted,可视化软件.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo apt-get install gparted
+</code></pre></div></div> <p>This is beyond the scope of this page. <a href="https://help.ubuntu.com/community/HowtoPartition">Try here if you need help</a>. Memorize or write down the location of the partition, something like /sda3. When you do <strong>create a new partition it is highly suggested that you create an ext3 or ext4 partition</strong> to house your new home directory.</p> <h2 id="find-the-uuid-of-the-partition">Find the uuid of the Partition</h2> <p>The uuid (Universally Unique Identifier) reference for all partitions can be found by opening a <a href="https://help.ubuntu.com/community/UsingTheTerminal#Starting a Terminal">command-line</a> to type the following:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo blkid
+</code></pre></div></div> <h3 id="alternative-method">Alternative Method</h3> <p>For some older releases of Ubuntu the “blkid” command might not work so this could be used instead</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo vol_id -u &lt;partition&gt;
+</code></pre></div></div> <p>for example</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo vol_id -u /dev/sda3
+</code></pre></div></div> <p>Now you just need to take note (copy&amp;paste into a text-file) the uuid of the partition that you have set-up ready to be the new /home partition.</p> <h1 id="setup-fstab">Setup Fstab</h1> <p>Your fstab is a file used to tell Ubuntu what partitions to mount at boot. The following commands will duplicate your current fstab, append the year-month-day to the end of the file name, compare the two files and open the original for editing.</p> <ol> <li>Duplicate your fstab file:</li> </ol> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo cp /etc/fstab /etc/fstab.$(date +%Y-%m-%d)
+</code></pre></div></div> <ol> <li>Compare the two files to confirm the backup matches the original:</li> </ol> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmp /etc/fstab /etc/fstab.$(date +%Y-%m-%d)
+</code></pre></div></div> <ol> <li>Open the original fstab in a text editor:</li> </ol> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo gedit /etc/fstab 
+</code></pre></div></div> <p>and add these lines into it</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># (identifier)  (location, eg sda5)   (format, eg ext3 or ext4)      (some settings) 
+UUID=????????   /media/home    ext3          defaults       0       2 
+</code></pre></div></div> <p>and replace the “????????” with the UUID number of the intended /home partition.</p> <p>NOTE: In the above example, the specified partition in the new text is an ext3, but if yours is an ext4 partition, you should change the part above that says “ext3” to say “ext4”, in addition to replacing the ???’s with the correct UUID. Also note that if you are using Kubuntu, Xubuntu or Lubuntu you may need to replace “gedit” with “kate”, “mousepad” or “leafpad”, respectively. They are text editors included with those distributions.</p> <ol> <li>Save and Close the fstab file, then type the following command:</li> </ol> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mkdir /media/home
+</code></pre></div></div> <p>This command will create a new directory, later used for temporarily mounting the new partition. At the end of the procedure this directory can be removed.</p> <p>Now you can restart your machine or instead of rebooting you might prefer to just re-load the updated fstab</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mount -a
+</code></pre></div></div> <p>Either should have mounted the new partition as /media/home. We will edit the fstab again later so this arrangement of the partition is only temporary.</p> <h1 id="copy-home-to-the-new-partition">Copy /home to the New Partition</h1> <p>Next we will copy all files, directories and sub-directories from your current /home directory into the new partition. If you do not have an encrypted home file system, just do the following:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo rsync -aXS --exclude='/*/.gvfs' /home/. /media/home/.
+</code></pre></div></div> <p>I prefer adding the “–progress” tag just before the “–excludes” one - otherwise there is no indication of anything happening. The “–progress” tag reports on each file individually so you see tons of unfamiliar stuff scrolling by very fast. Rsync can be interrupted as many times as you like and it checks to see how much has already been done when you start it up again. So, this copying stage can be broken down into many sessions. After it has completed once it’s wise to run it a couple more times just to make sure it includes everything you may have added since first starting the first copying/syncing session - even if you’ve done the whole thing all in just one session.</p> <p>The –exclude=’/*/.gvfs’ prevents rsync from complaining about not being able to copy .gvfs, but I believe it is optional. Even if rsync complains, it will copy everything else anyway. (<a href="http://ubuntuforums.org/showthread.php?t=791693">See here for discussion on this</a>)</p> <h2 id="encrypted-file-systems">Encrypted file systems</h2> <p>If you have an encrypted home file system, then the above will just leave you with an unencrypted copy of your files, which is probably not what you want. You could re-encrypt them after copying, or copy them in their encrypted form. Here is one way to do that.</p> <p>First, you’ll need to shut down, and reboot from a LiveCD or USB stick. Then you’ll need to mount your root partition and new home partition. (You can do this by selecting those devices in the file viewer). They will be mounted under /media/ubuntu - so for example, if you named your root partition linux-root, then your old home directory will be found at /media/ubuntu/linux-root/home. And if you named your new home partition linux-home, then this will be found at /media/ubuntu/linux-home. So, now you can copy your encrypted home files (here assuming your partitions are named linux-root and linux-home):</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo rsync -aXS /media/ubuntu/linux-root/home/. /media/ubuntu/linux-home/.
+</code></pre></div></div> <p>There is no point trying to exclude any files with specific names, because the names of the files are encrypted too!</p> <p>Leave your machine running from the LiveCD or USB for the moment.</p> <h1 id="optional-check-copying-worked">Optional: Check Copying Worked</h1> <p>You should now have two duplicate copies of all the data within your home directory; the original being located in /home and the new duplicate located in /media/home. You should confirm all files and directories copied over successfully. One way to do this (for an unencrypted file system) is by using the diff command:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo diff -r /home /media/home -x ".gvfs/*"
+</code></pre></div></div> <p>If you are doing this from a <a href="https://help.ubuntu.com/community/LiveCd">LiveCd</a> or to an existing partition that already has stuff on it you may find differences but hopefully it should be obvious which diffs you can ignore.</p> <p>You can also expect to see some errors about files not found. These are due to symbolic links that point to places that don’t presently exist (but will do after you have rebooted). You can ignore these - but check out anything else.</p> <h2 id="encrypted-file-systems-1">Encrypted file systems</h2> <p>If you have an encrypted file system, the command will look more like this.</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo diff -r /media/ubuntu/linux-root/home /media/ubuntu/linux-home
+</code></pre></div></div> <p>Now you can shut-down, remove the LiveCD / USB stick, and reboot as normal.</p> <h1 id="preparing-fstab-for-the-switch">Preparing fstab for the switch</h1> <p>We now need to modify the fstab again to point to the new partition and mount it as /home. So again on a command-line</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo gedit /etc/fstab
+</code></pre></div></div> <p>and now edit the lines you added earlier, changing the “/media/home” part to simply say “/home” so that it looks like this:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># (identifier)  (location, eg sda5)   (format, eg ext3 or ext4)      (some settings) 
+UUID=????????   /home    ext3          defaults       0       2
+</code></pre></div></div> <p>Then, press Save, close the file but don’t reboot just yet.</p> <h1 id="moving-home-into-old_home">Moving /home into /old_home</h1> <p>Backing up your old home, just in case things have not gone completely smoothly, is best done right now. Here is how:</p> <p>As long as you have not rebooted yet, you will still see 2 copies of your /home directory; the new one on the new partition (currently mounted as /media/home) and the old one still in the same partition it was always in (currently mounted as /home). We need to move the contents of the old home directory out of the way and create an empty “place-holder” directory to act as a “mount point” for our new partition.</p> <p>Type the following string of commands in to do all this at once:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd / &amp;&amp; sudo mv /home /old_home &amp;&amp; sudo mkdir /home
+</code></pre></div></div> <p>By default, when you open a terminal window it places you within your home directory. Typing cd / takes us to the root directory and out of home so we can then use the sudo mv command to essentially rename /home into /old_home, and finally create a new, empty /home placeholder.</p> <h1 id="reboot-or-remount-all">Reboot or Remount all</h1> <p>With;</p> <ol> <li>your fstab now edited to mount your new partition to our /home place-holder and</li> <li>the original /home now called /old_home,</li> </ol> <p>it should be a good time to reboot your computer to check the whole thing really did work. Your new partition should mount as /home and everything should look exactly the same as it did before you started.</p> <p>Btw, geeks might prefer to avoid rebooting by just re-loading the updated fstab</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mount -a
+</code></pre></div></div> <p>There is no need to reboot - unless you have an encrypted file system.</p> <h2 id="troubleshooting">Troubleshooting</h2> <p>If you receive an error like ‘The volume may already be mounted’, use the following command to unmount the drive first before re-doing the last step again. (note the “n” should be missing from the command, making it “umount”)</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo umount /media/home/
+</code></pre></div></div> <p>Then try mounting again</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mount -a
+</code></pre></div></div> <h1 id="deleting-the-old-home">Deleting the old Home</h1> <p>You can keep using the system as it is for ages before doing this, unless you are desperately short of space on the / partition. It’s probably best to leave this step until a long time after you have been using the system happily. When you do eventually feel safe enough to delete the old home then you can try;</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cd /
+sudo rm -rI /old_home
+</code></pre></div></div> <p>Be careful with the above command because mis-typing it could result in the deletion of other files and directories!</p> <h1 id="technical-notes-and-resources">Technical Notes and Resources</h1> <table> <tbody> <tr> <td>Rsync was chosen over cp and find</td> <td>cpio because it seemed to maintain permissions.</td> </tr> </tbody> </table> <p>http://ubuntu.wordpress.com/2006/01/29/move-home-to-its-own-partition/</p> <p>http://ubuntuforums.org/showthread.php?t=46866</p>]]></content><author><name></name></author><category term="知识学习"/><category term="ubuntu"/><category term="shell"/><category term="File system"/><category term="教程"/><summary type="html"><![CDATA[由于home文件夹较大,且其默认是在系统盘下的. 当系统盘空间不足时,我们可以将Home文件夹移至新磁盘下的新分区内.]]></summary></entry><entry><title type="html">Pybind 11 安装使用</title><link href="https://wenlc.cn/blog/2020/pybind11/" rel="alternate" type="text/html" title="Pybind 11 安装使用"/><published>2020-07-29T16:33:51+00:00</published><updated>2020-07-29T16:33:51+00:00</updated><id>https://wenlc.cn/blog/2020/pybind11</id><content type="html" xml:base="https://wenlc.cn/blog/2020/pybind11/"><![CDATA[<h1 id="install">Install</h1> <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#pre-requirements</span>
+<span class="nb">sudo </span>apt <span class="nb">install </span>python3-dev
+pip <span class="nb">install </span>pytest 
+<span class="c">#download source code</span>
+git clone https://github.com/pybind/pybind11.git
+<span class="nb">cd </span>pybind11
+<span class="nb">mkdir </span>build
+<span class="nb">cd </span>build
+<span class="c">#make </span>
+cmake ..
+make check <span class="nt">-j</span> 8
+<span class="nb">sudo </span>make <span class="nb">install</span>
+</code></pre></div></div> <h1 id="using">Using</h1> <p>Attention: DO NOT use <code class="language-plaintext highlighter-rouge">g++</code> or <code class="language-plaintext highlighter-rouge">c++</code> to build (in case we haven’t install pybind11 in python environment(<strong>which is also no need to do</strong>)).</p> <p>Instead, we use Cmake to compile our code.</p> <div class="language-cmake highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cmake_minimum_required</span><span class="p">(</span>VERSION 3.0<span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span>PROJ_NAME <span class="s2">"example"</span><span class="p">)</span>
+<span class="nb">project</span><span class="p">(</span><span class="si">${</span><span class="nv">PROJ_NAME</span><span class="si">}</span><span class="p">)</span>
+
+<span class="nb">set</span><span class="p">(</span>CMAKE_CXX_STANDARD 14<span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span>CMAKE_CXX_STANDARD_REQUIRED ON<span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span>CMAKE_CXX_EXTENSIONS OFF<span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span>CMAKE_C_FLAGS <span class="s2">"</span><span class="si">${</span><span class="nv">CMAKE_C_FLAGS</span><span class="si">}</span><span class="s2"> -Wall -O3"</span><span class="p">)</span>
+<span class="nb">set</span><span class="p">(</span>CMAKE_CXX_FLAGS <span class="s2">"</span><span class="si">${</span><span class="nv">CMAKE_CXX_FLAGS</span><span class="si">}</span><span class="s2"> -Wall -O3"</span><span class="p">)</span>
+
+<span class="nb">find_package</span><span class="p">(</span>pybind11 REQUIRED<span class="p">)</span>
+<span class="nf">pybind11_add_module</span><span class="p">(</span><span class="si">${</span><span class="nv">PROJ_NAME</span><span class="si">}</span> example.cpp<span class="p">)</span>
+
+<span class="nb">target_link_libraries</span><span class="p">(</span><span class="si">${</span><span class="nv">PROJ_NAME</span><span class="si">}</span> PRIVATE pybind11::module<span class="p">)</span>
+
+<span class="nb">find_package</span><span class="p">(</span>Python<span class="p">)</span>
+<span class="nb">find_path</span><span class="p">(</span>PYTHON_SITE_PACKAGES site-packages <span class="si">${</span><span class="nv">PYTHON_INCLUDE_PATH</span><span class="si">}</span>/..<span class="p">)</span>
+
+<span class="nb">install</span><span class="p">(</span>TARGETS <span class="si">${</span><span class="nv">PROJ_NAME</span><span class="si">}</span> RUNTIME DESTINATION <span class="si">${</span><span class="nv">PYTHON_SITE_PACKAGES</span><span class="si">}</span>
+							 LIBRARY DESTINATION <span class="si">${</span><span class="nv">PYTHON_SITE_PACKAGES</span><span class="si">}</span>
+							 ARCHIVE DESTINATION <span class="si">${</span><span class="nv">PYTHON_SITE_PACKAGES</span><span class="si">}</span>
+							 <span class="p">)</span>
+</code></pre></div></div> <p>And folder is such like:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>├── build
+│   ├  ...
+├── CMakeLists.txt
+└── example.cpp
+</code></pre></div></div>]]></content><author><name></name></author><category term="知识学习"/><category term="python"/><category term="pybind11"/><category term="cmake"/><category term="c++"/><category term="教程"/><summary type="html"><![CDATA[Install]]></summary></entry><entry><title type="html">C++ Defaulted 函数</title><link href="https://wenlc.cn/blog/2020/c-default/" rel="alternate" type="text/html" title="C++ Defaulted 函数"/><published>2020-07-27T15:44:49+00:00</published><updated>2020-07-27T15:44:49+00:00</updated><id>https://wenlc.cn/blog/2020/c-default</id><content type="html" xml:base="https://wenlc.cn/blog/2020/c-default/"><![CDATA[<h2 id="背景问题">背景问题</h2> <p>C++ 的类有四类特殊成员函数，它们分别是：默认构造函数、析构函数、拷贝构造函数以及拷贝赋值运算符。这些类的特殊成员函数负责创建、初始化、销毁，或者拷贝类的对象。如果程序员没有显式地为一个类定义某个特殊成员函数，而又需要用到该特殊成员函数时，则编译器会隐式的为这个类生成一个默认的特殊成员函数。例如：</p> <h3 id="清单-1">清单 1</h3> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">X</span><span class="p">{</span> 
+<span class="nl">private:</span> 
+ <span class="kt">int</span> <span class="n">a</span><span class="p">;</span> 
+<span class="p">};</span> 
+
+<span class="n">X</span> <span class="n">x</span><span class="p">;</span>
+</code></pre></div></div> <p>在清单 1 中，程序员并没有定义类 <code class="language-plaintext highlighter-rouge">X</code> 的默认构造函数，但是在创建类 <code class="language-plaintext highlighter-rouge">X</code> 的对象 <code class="language-plaintext highlighter-rouge">x</code> 的时候，又需要用到类 <code class="language-plaintext highlighter-rouge">X</code> 的默认构造函数，此时，编译器会隐式的为类 <code class="language-plaintext highlighter-rouge">X</code> 生成一个默认构造函数。该自动生成的默认构造函数没有参数，包含一个空的函数体，即 <code class="language-plaintext highlighter-rouge">X::X（）{ }</code>。虽然自动生成的默认构造函数仅有一个空函数体，但是它仍可用来成功创建类 <code class="language-plaintext highlighter-rouge">X</code> 的对象 <code class="language-plaintext highlighter-rouge">x</code>，清单 1 也可以编译通过。</p> <p>但是，如果程序员为类 X 显式的自定义了非默认构造函数，却没有定义默认构造函数的时候，清单 2 将会出现编译错误：</p> <h3 id="清单-2">清单 2</h3> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">X</span><span class="p">{</span> 
+<span class="nl">public:</span> 
+ <span class="n">X</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span> 
+   <span class="n">a</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span> 
+ <span class="p">}</span>     
+<span class="k">private</span><span class="o">:</span> 
+ <span class="kt">int</span> <span class="n">a</span><span class="p">;</span> 
+<span class="p">};</span> 
+
+<span class="n">X</span> <span class="n">x</span><span class="p">;</span>  <span class="c1">// 错误 , 默认构造函数 X::X() 不存在</span>
+</code></pre></div></div> <p>清单 2 编译出错的原因在于类 <code class="language-plaintext highlighter-rouge">X</code> 已经有了用户自定义的构造函数，所以编译器将不再会为它隐式的生成默认构造函数。如果需要用到默认构造函数来创建类的对象时，程序员必须自己显式的定义默认构造函数。例如：</p> <h3 id="清单-3">清单 3</h3> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">X</span><span class="p">{</span> 
+<span class="nl">public:</span> 
+ <span class="n">X</span><span class="p">(){};</span>  <span class="c1">// 手动定义默认构造函数</span>
+ <span class="n">X</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span> 
+   <span class="n">a</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span> 
+ <span class="p">}</span>     
+<span class="k">private</span><span class="o">:</span> 
+ <span class="kt">int</span> <span class="n">a</span><span class="p">;</span> 
+<span class="p">};</span> 
+
+<span class="n">X</span> <span class="n">x</span><span class="p">;</span>   <span class="c1">// 正确，默认构造函数 X::X() 存在</span>
+</code></pre></div></div> <p>从清单 3 可以看出，原本期望编译器自动生成的默认构造函数需要程序员手动编写了，即程序员的工作量加大了。此外，手动编写的默认构造函数的代码执行效率比编译器自动生成的默认构造函数低。类的其它几类特殊成员函数也和默认构造函数一样，当存在用户自定义的特殊成员函数时，编译器将不会隐式的自动生成默认特殊成员函数，而需要程序员手动编写，加大了程序员的工作量。类似的，手动编写的特殊成员函数的代码执行效率比编译器自动生成的特殊成员函数低。</p> <h2 id="defaulted-函数的提出">Defaulted 函数的提出</h2> <p>为了解决如清单 3 所示的两个问题：1. 减轻程序员的编程工作量；2. 获得编译器自动生成的默认特殊成员函数的高的代码执行效率，C++11 标准引入了一个新特性：<strong>defaulted 函数</strong>。程序员只需在函数声明后加上“<code class="language-plaintext highlighter-rouge">=default;</code>”，就可将该函数声明为 defaulted 函数，编译器将为显式声明的 defaulted 函数自动生成函数体。例如：</p> <h3 id="清单-4">清单 4</h3> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">X</span><span class="p">{</span> 
+<span class="nl">public:</span> 
+ <span class="n">X</span><span class="p">()</span><span class="o">=</span> <span class="k">default</span><span class="p">;</span> 
+ <span class="n">X</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span> 
+   <span class="n">a</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span> 
+ <span class="p">}</span>     
+<span class="k">private</span><span class="o">:</span> 
+ <span class="kt">int</span> <span class="n">a</span><span class="p">;</span> 
+<span class="p">};</span> 
+
+<span class="n">X</span> <span class="n">x</span><span class="p">;</span>
+</code></pre></div></div> <p>在清单 4 中，编译器会自动生成默认构造函数 <code class="language-plaintext highlighter-rouge">X::X(){}</code>，该函数可以比用户自己定义的默认构造函数获得更高的代码效率。</p> <h2 id="defaulted-函数定义语法">Defaulted 函数定义语法</h2> <p>Defaulted 函数是 C++11 标准引入的函数定义新语法，defaulted 函数定义的语法如图 1 所示：</p> <p><img src="https://www.ibm.com/developerworks/cn/aix/library/1212_lufang_c11new/image003.gif" alt="图 1. Defaulted 函数定义语法图"/></p> <h2 id="defaulted-函数的用法及示例">Defaulted 函数的用法及示例</h2> <p>Defaulted 函数特性仅适用于类的特殊成员函数，且该特殊成员函数没有默认参数。例如：</p> <h3 id="清单-5">清单 5</h3> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">X</span> <span class="p">{</span> 
+<span class="nl">public:</span> 
+ <span class="kt">int</span> <span class="n">f</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>      <span class="c1">// 错误 , 函数 f() 非类 X 的特殊成员函数</span>
+ <span class="n">X</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>       <span class="c1">// 错误 , 构造函数 X(int, int) 非 X 的特殊成员函数</span>
+ <span class="n">X</span><span class="p">(</span><span class="kt">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>   <span class="c1">// 错误 , 默认构造函数 X(int=1) 含有默认参数</span>
+<span class="p">};</span>
+</code></pre></div></div> <p>Defaulted 函数既可以在类体里（inline）定义，也可以在类体外（out-of-line）定义。例如：</p> <h3 id="清单-6">清单 6</h3> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">X</span><span class="p">{</span> 
+<span class="nl">public:</span>  
+  <span class="n">X</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span> <span class="c1">//Inline defaulted 默认构造函数</span>
+  <span class="n">X</span><span class="p">(</span><span class="k">const</span> <span class="n">X</span><span class="o">&amp;</span><span class="p">);</span> 
+  <span class="n">X</span><span class="o">&amp;</span> <span class="k">operator</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">X</span><span class="o">&amp;</span><span class="p">);</span> 
+  <span class="o">~</span><span class="n">X</span><span class="p">()</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>  <span class="c1">//Inline defaulted 析构函数</span>
+<span class="p">};</span> 
+
+<span class="n">X</span><span class="o">::</span><span class="n">X</span><span class="p">(</span><span class="k">const</span> <span class="n">X</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>  <span class="c1">//Out-of-line defaulted 拷贝构造函数</span>
+<span class="n">X</span><span class="o">&amp;</span> <span class="n">X</span><span class="o">::</span><span class="k">operator</span> <span class="o">=</span> <span class="p">(</span><span class="k">const</span> <span class="n">X</span><span class="o">&amp;</span><span class="p">)</span> <span class="o">=</span> <span class="k">default</span><span class="p">;</span>     <span class="c1">//Out-of-line defaulted  </span>
+    <span class="c1">// 拷贝赋值操作符</span>
+</code></pre></div></div> <p>在 C++ 代码编译过程中，如果程序员没有为类 <code class="language-plaintext highlighter-rouge">X</code> 定义析构函数，但是在销毁类 <code class="language-plaintext highlighter-rouge">X</code> 对象的时候又需要调用类 <code class="language-plaintext highlighter-rouge">X</code> 的析构函数时，编译器会自动隐式的为该类生成一个析构函数。该自动生成的析构函数没有参数，包含一个空的函数体，即 <code class="language-plaintext highlighter-rouge">X::~X（）{ }</code>。例如：</p> <h3 id="清单-7">清单 7</h3> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">X</span> <span class="p">{</span> 
+<span class="nl">private:</span> 
+ <span class="kt">int</span> <span class="n">x</span><span class="p">;</span> 
+<span class="p">};</span> 
+
+<span class="k">class</span> <span class="nc">Y</span><span class="o">:</span> <span class="k">public</span> <span class="n">X</span> <span class="p">{</span> 
+<span class="nl">private:</span> 
+ <span class="kt">int</span> <span class="n">y</span><span class="p">;</span> 
+<span class="p">};</span> 
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span> 
+ <span class="n">X</span><span class="o">*</span> <span class="n">x</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Y</span><span class="p">;</span> 
+ <span class="k">delete</span> <span class="n">x</span><span class="p">;</span> 
+<span class="p">}</span>
+</code></pre></div></div> <p>在清单 7 中，程序员没有为基类 X 和派生类 Y 定义析构函数，当在主函数内 delete 基类指针 x 的时候，需要调用基类的析构函数。于是，编译器会隐式自动的为类 X 生成一个析构函数，从而可以成功的销毁 x 指向的派生类对象中的基类子对象（即 int 型成员变量 x）。</p> <p>但是，这段代码存在内存泄露的问题，当利用 <code class="language-plaintext highlighter-rouge">delete</code> 语句删除指向派生类对象的指针 <code class="language-plaintext highlighter-rouge">x</code> 时，系统调用的是基类的析构函数，而非派生类 <code class="language-plaintext highlighter-rouge">Y</code> 类的析构函数，因此，编译器无法析构派生类的 <code class="language-plaintext highlighter-rouge">int</code> 型成员变量 y。</p> <p>因此，一般情况下我们需要将基类的析构函数定义为虚函数，当利用 delete 语句删除指向派生类对象的基类指针时，系统会调用相应的派生类的析构函数（实现多态性），从而避免内存泄露。但是编译器隐式自动生成的析构函数都是非虚函数，这就需要由程序员手动的为基类 <code class="language-plaintext highlighter-rouge">X</code> 定义虚析构函数，例如：</p> <h3 id="清单-8">清单 8</h3> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">X</span> <span class="p">{</span> 
+<span class="nl">public:</span> 
+ <span class="k">virtual</span> <span class="o">~</span><span class="n">X</span><span class="p">(){};</span>     <span class="c1">// 手动定义虚析构函数</span>
+<span class="k">private</span><span class="o">:</span> 
+ <span class="kt">int</span> <span class="n">x</span><span class="p">;</span> 
+<span class="p">};</span> 
+
+<span class="k">class</span> <span class="nc">Y</span><span class="o">:</span> <span class="k">public</span> <span class="n">X</span> <span class="p">{</span> 
+<span class="nl">private:</span> 
+ <span class="kt">int</span> <span class="n">y</span><span class="p">;</span> 
+<span class="p">};</span> 
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span> 
+ <span class="n">X</span><span class="o">*</span> <span class="n">x</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Y</span><span class="p">;</span> 
+ <span class="k">delete</span> <span class="n">x</span><span class="p">;</span> 
+ <span class="p">}</span>
+</code></pre></div></div> <p>在清单 8 中，由于程序员手动为基类 <code class="language-plaintext highlighter-rouge">X</code> 定义了虚析构函数，当利用 <code class="language-plaintext highlighter-rouge">delete</code> 语句删除指向派生类对象的基类指针 <code class="language-plaintext highlighter-rouge">x</code> 时，系统会调用相应的派生类 <code class="language-plaintext highlighter-rouge">Y</code> 的析构函数（由编译器隐式自动生成）以及基类 <code class="language-plaintext highlighter-rouge">X</code> 的析构函数，从而将派生类对象完整的销毁，可以避免内存泄露。</p> <p>但是，在清单 8 中，程序员需要手动的编写基类的虚构函数的定义（哪怕函数体是空的），增加了程序员的编程工作量。更值得一提的是，<strong>手动定义的析构函数的代码执行效率要低于编译器自动生成的析构函数。</strong></p> <p>为了解决上述问题，我们可以将基类的虚析构函数声明为 defaulted 函数，这样就可以显式的指定编译器为该函数自动生成函数体。例如：</p> <h3 id="清单-9">清单 9</h3> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">X</span> <span class="p">{</span> 
+<span class="nl">public:</span> 
+ <span class="k">virtual</span> <span class="o">~</span><span class="n">X</span><span class="p">()</span><span class="o">=</span> <span class="n">defaulted</span><span class="p">;</span> <span class="c1">// 编译器自动生成 defaulted 函数定义体</span>
+<span class="nl">private:</span> 
+ <span class="kt">int</span> <span class="n">x</span><span class="p">;</span> 
+<span class="p">};</span> 
+
+<span class="k">class</span> <span class="nc">Y</span><span class="o">:</span> <span class="k">public</span> <span class="n">X</span> <span class="p">{</span> 
+<span class="nl">private:</span> 
+ <span class="kt">int</span> <span class="n">y</span><span class="p">;</span> 
+<span class="p">};</span> 
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(){</span> 
+ <span class="n">X</span><span class="o">*</span> <span class="n">x</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Y</span><span class="p">;</span> 
+ <span class="k">delete</span> <span class="n">x</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>在清单 9 中，编译器会自动生成虚析构函数 <code class="language-plaintext highlighter-rouge">virtual X::X(){}</code>，该函数比用户自己定义的虚析构函数具有更高的代码执行效率。</p>]]></content><author><name></name></author><category term="知识学习"/><category term="c++"/><category term="c++11"/><summary type="html"><![CDATA[背景问题]]></summary></entry><entry><title type="html">Autonomous Vehicles Should Start Small, Go Slow</title><link href="https://wenlc.cn/blog/2020/auto-ieee/" rel="alternate" type="text/html" title="Autonomous Vehicles Should Start Small, Go Slow"/><published>2020-04-21T21:55:00+00:00</published><updated>2020-04-21T21:55:00+00:00</updated><id>https://wenlc.cn/blog/2020/auto-ieee</id><content type="html" xml:base="https://wenlc.cn/blog/2020/auto-ieee/"><![CDATA[<p><a href="https://spectrum.ieee.org/robotics/robotics-software/autonomous-vehicles-should-start-small-go-slow">Origin Article</a> By Shaoshan Liu and Jean-Luc Gaudiot</p> <div class="img0"> <figure> <picture> <img src="https://spectrum.ieee.org/media-library/illustration-of-cars-driving-around-a-campus.jpg?id=25590922" class="img-fluid rounded z-depth-1" width="auto" height="auto" data-zoomable="" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"/> </picture> </figure> </div> <p>许多年轻的都市人不想拥有汽车，与前几代人不同的是，他们不需要依赖公共交通。相反，他们将交通出行视为一种服务。当他们需要长途旅行时，比如说超过5英里（8公里），他们会用手机叫一辆Uber（或类似的共享单车公司的车）。如果他们的行程不到一英里左右，他们要么步行，要么使用各种 “微移动 “服务，比如越来越多的Lime和Bird踏板车，或者在一些城市，共享单车。</p> <p>问题是，如今移动即服务生态系统往往不能很好地覆盖中间距离，比如说几英里的距离。雇佣Uber或Lyft来进行这种短途旅行，其费用令人沮丧，而且骑着踏板车或自行车超过一英里左右的路程对很多人来说可能会很费劲。因此，将自己送到1到5英里外的目的地可能是一个挑战。然而，这样的旅行占到了乘客总里程的一半左右。</p> <p>这些中长途旅行中，很多都是在车流量有限的环境中进行的，比如大学校园和工业园区，在这些地方部署小型、低速的自主车辆，在经济上和技术上都是可行的。我们已经与一家初创公司合作，打算将这种交通方式普及化。这家名为PerceptIn的公司已经在日本奈良和福冈的旅游景点、中国深圳的工业园区、以及公司总部所在地–印地安那州的Fishers市，都有自主车辆在运营。</p> <p>考虑到目前自主汽车的生产量仍然是多么的昂贵—一个实验车型的价格可能在30万美元左右—你可能不可能认为有可能以更低的价格卖出一辆自驾车汽车。我们过去几年的经验表明，事实上，今天生产出一辆自驾车乘用车是有可能的。PerceptIn的车辆目前的售价约为7万美元，未来价格肯定会下降。以下是我们和PerceptIn的同事们如何将自主驾驶汽车的成本降下来的。</p> <h2 id="高成本无人车标准技术方案">高成本无人车标准技术方案</h2> <p>首先，我们先来解释一下为什么自主驾驶汽车通常会这么贵。一言以蔽之，就是因为它们所携带的传感器和计算机非常昂贵。</p> <p>自主驾驶所需的传感器套件通常包括一个高端卫星导航接收器、激光雷达（光线探测和测距）、一个或多个摄像头、雷达和声纳。该车还需要至少有一台非常强大的计算机。</p> <p>这种情况下使用的卫星导航接收器与手机中的卫星导航接收器不一样。内置在自主车辆上的那种卫星导航接收器具有所谓的实时运动学（RTK）功能，可进行高精度的位置固定，精确度可达10厘米。这些设备的价格通常在4000美元左右。即便如此，这种卫星导航接收机也不能完全依靠它来告诉汽车的位置。在卫星信号从附近的建筑物上反弹的情况下，它所得到的固定信号可能会产生噪音和延迟。在任何情况下，卫星导航都需要无遮挡的天空视野。在封闭的环境比如隧道内，卫星导航无疑直接失效。</p> <p>幸运的是，自动驾驶汽车还有其他方法来确定自己的位置。特别是，它们可以使用激光雷达，通过将激光束反弹到物体上并测量光线反射回来所需的时间来确定与物体的距离。一个典型的自主车辆用激光雷达装置的探测范围为150米，每秒采样超过100万个空间点。</p> <p>这样的激光雷达扫描可用于识别当地环境中的不同形状。然后，车辆的计算机将所观察到的形状与该地区的高清数字地图中记录的形状进行比较，使其能够随时跟踪车辆的准确位置。激光雷达还可用于识别和避开瞬时障碍物，如行人和其他车辆等。</p> <p>Lidar是一项很棒的技术，但它有两个问题。首先，这些设备的价格非常昂贵。一台用于自主驾驶的高端激光雷达的价格很容易超过8万美元，虽然成本在下降，但对于低速应用来说，4000美元左右就能买到一台合适的设备。另外，激光雷达作为一种光学设备，在大雨或大雾等恶劣天气下，可能无法提供合理的测量结果。</p> <p>这些车辆上的摄像头也是如此，主要用于识别和跟踪不同的物体，如车道、红绿灯、行人等边界。通常情况下，在车辆周围安装了多个摄像头。这些摄像头通常以每秒60帧的速度运行，所使用的多个摄像头每秒可以产生超过1千兆字节的原始数据。当然，处理这些海量的信息，对车辆的计算机提出了非常大的计算需求。好的一面是，摄像头的价格并不昂贵。</p> <p>自主汽车上的雷达和声纳系统被用于避障。它们产生的数据集显示了车辆路径上最近的物体的距离。这些系统的主要优点是可以在各种天气条件下工作。声纳通常覆盖的范围最多10米，而雷达的范围通常可达200米。与摄像机一样，这些传感器的价格相对便宜，通常每个传感器的价格不到1000美元。</p> <p>这类传感器提供的许多测量结果会被输入到车辆的计算机中，计算机必须将所有这些信息整合在一起，以产生对环境的理解。人工神经网络和深度学习，这种近年来发展迅速的方法在这里发挥了很大的作用。通过这些技术，计算机可以跟踪附近行驶的其他车辆，以及过马路的行人，确保自主车辆不会与任何东西或任何人发生碰撞。</p> <p>当然，指挥自主车辆的计算机要做的事情还不止是避免撞到东西。它们必须做出大量的决策，决定转向的方向和速度。为此，车辆的计算机会对附近车辆的即将到来的移动情况进行预测，然后根据这些预测以及乘员需要去哪里，再决定行动方案。</p> <div class="img0"> <figure> <picture> <img src="https://spectrum.ieee.org/media-library/although-lidar-is-de-rigueur-for-highway-capable-autonomous-cars-low-speed-vehicles-can-drive-themselves-using-a-suite-of-less.jpg?id=25590924" class="img-fluid rounded z-depth-1" width="auto" height="auto" data-zoomable="" onerror="this.onerror=null; $('.responsive-img-srcset').remove();"/> </picture> </figure> </div> <p>最后，自动驾驶汽车需要一张好的地图。传统的数字地图通常是由卫星图像生成的，精确度为米级。虽然这对于人类驾驶者来说已经绰绰有余，但自主汽车对车道级信息的精度要求更高。因此，需要特殊的高清地图。</p> <p>就像传统的数字地图一样，这些高清地图包含了很多层信息。最底层是地图的网格单元格，约5×5厘米；它是由专用汽车收集的原始激光雷达数据生成的。这个网格记录了环境中物体的高程和反射信息。</p> <p>在这个基础网格之上，还有几层附加信息。例如，车道信息被添加到网格地图上，以便自主车辆判断是否在正确的车道上。在车道信息的基础上，还添加了交通标志标签，以通知自主车辆当地的限速、是否接近红绿灯等。这在车辆上的摄像头无法读取交通标志的情况下，有一定的帮助。</p> <p>传统的数字地图是每6到12个月更新一次。为了确保自主车辆使用的地图包含最新信息，高清地图应该每周刷新一次。因此，对于一个中等规模的城市来说，生成和维护高清地图每年的成本可能高达数百万美元。</p> <p>这些高清地图上的所有数据都必须存储在车辆上的固态存储器中，以便随时访问，这就增加了计算硬件的成本，而计算硬件需要相当强大。举个例子，百度在自主驾驶中采用的一个早期计算系统，使用的是英特尔Xeon E5处理器和4到8个Nvidia K80 GPU加速器。该系统每秒能够提供64.5万亿次浮点运算，但它的功耗约为3000瓦，并产生了大量的热量。而它的成本约为3万美元。</p> <h2 id="perceptin低速无人车低成本方案">PerceptIn低速无人车低成本方案</h2> <p>考虑到光是传感器和计算机的成本就很容易超过10万美元，这就不难理解为什么自主汽车的价格如此昂贵了，至少在今天是这样。当然，随着生产总量的增加，价格会有所下降。但目前还不清楚创建和维护高清地图的成本将如何转嫁。无论如何，在正常道路和高速公路上自主驾驶所带来的所有明显的安全问题都需要时间来解决，而更好的技术还需要时间来解决。</p> <p>我们和PerceptIn的同事们一直在努力解决这些挑战，他们将注意力集中在那些在有限的区域内运行且不需要与高速交通混合的小型、低速车辆上–例如大学校园和工业园区。</p> <p>我们用来降低成本的主要策略是完全抛弃激光雷达，转而使用更经济实惠的传感器：摄像头、惯性测量单元、卫星定位接收器、车轮编码器、雷达和声纳。这些传感器所提供的数据可以通过一个叫做传感器融合的过程进行组合。</p> <p>这些传感器的缺点和优点都是相辅相成的。当其中一个传感器出现故障或故障时，其他传感器可以接替，以确保系统的可靠性。采用这种传感器融合的方式，传感器的成本最终可能会下降到2000美元左右。</p> <p>因为我们的汽车以低速行驶，最多只需要7米就能停下来，这使得它比普通的汽车要安全得多，因为普通的汽车可能需要几十米才能停下来。而且由于速度较低，计算系统的延迟要求也没有高速自主汽车上使用的系统那么苛刻。</p> <p>PerceptIn的车辆使用卫星定位进行初始定位。这些卫星导航接收机虽然不如高速公路上的自主汽车上的系统准确，但仍能提供亚米级的精度。通过将摄像头图像和惯性测量单元的数据结合在一起（在一种称为视觉惯性里程法的技术中），车辆的计算机进一步提高了精度，将位置固定到分米级。</p> <p>在成像方面，PerceptIn在一个硬件模块中集成了四个摄像头。一对摄像头面向车头，另一对面向车尾。每一对摄像头都能提供双目视力，能够捕捉到通常由激光雷达提供的空间信息。更重要的是，这四个摄像头合在一起可以捕捉到360度的环境视图，帧与帧之间有足够多的空间重叠区域，确保视觉测距仪可以在任何方向上工作。</p> <p>即使视觉测距仪出现故障，卫星定位信号中断，也不会丢失。该车仍然可以使用连接在车轮上的旋转编码器计算出位置更新—-遵循水手们几个世纪以来使用的一般策略，即死计算。</p> <p>将所有这些传感器的数据集结合起来，让车辆对环境有一个整体的了解。基于这种了解，车辆的计算机可以做出所需的决策，以确保顺利安全行驶。</p> <p>此外，车辆还有一个独立于主电脑之外的防撞系统，为车辆提供了最后一道防线。这套系统利用毫米波雷达和声纳的组合，当车辆靠近物体5米以内时，就会感应到，在这种情况下，车辆会立即停止行驶。</p> <p>依靠成本较低的传感器只是PerceptIn为降低成本而采取的策略之一。另一个策略是将计算推到传感器上，以减少对车辆主电脑的要求，一台普通的PC机总成本不到1500美元，系统峰值功率只有400W。</p> <p>以PerceptIn的摄像头模块为例，每秒可以产生400兆字节的图像信息。如果将这些数据全部传输到主计算机上进行处理，那么该计算机就必须非常复杂，这将在可靠性、功率和成本方面产生重大影响。相反，PerceptIn让每个传感器模块尽可能多地进行计算。这就减少了主计算机的负担，简化了设计。</p> <p>更具体地说，GPU被嵌入到摄像头模块中，从原始图像中提取特征。然后，只将提取的特征发送到主计算机，将数据传输率降低一千倍。</p> <p>另一种限制成本的方法涉及到高清地图的创建和维护。PerceptIn不使用装有激光雷达装置的车辆来提供地图数据，而是用视觉信息增强现有的数字地图，以达到分米级精度。</p> <p>由此产生的高精度可视地图，就像它们所取代的基于激光雷达的高清地图一样，由多个图层组成。底层可以是任何现有的数字地图，例如来自OpenStreetMap项目的数字地图。这个底层的分辨率约为1米。第二层记录了路面的视觉特征，将地图分辨率提高到分米级。第三层同样以分米分辨率保存，记录了环境中其他部分的视觉特征，如标志、建筑物、树木、围墙和灯杆等。第四层是语义层，它包含了车道标记、交通标志标签等。</p> <h2 id="总结">总结</h2> <p>虽然在过去的十年里已经取得了很大的进展，但要想让完全自主的汽车开始在大多数道路和高速公路上行驶，可能还需要十年或更长时间。在此期间，一个实用的方法是在限制性的环境下使用低速自主汽车。包括Navya、EasyMile和May Mobility在内的几家公司，以及PerceptIn等公司一直在认真地研究这一战略，并取得了良好的进展。</p> <p>最终，随着相关技术的进步，车辆的类型和部署范围可以扩大，最终可以包括能够与人类专家级驾驶员的性能相当甚至超过人类专家级驾驶员的车辆。</p> <p>PerceptIn已经表明，制造小型、低速自主汽车的成本远远低于制造一辆能上高速公路的自主汽车的成本。当车辆大量生产时，我们预计制造成本将低于1万美元。在不远的将来，这样的清洁能源自主班车或许有可能在城市中心地带载客，比如曼哈顿的中央商务区，现在这里的平均车速只有7英里/小时。这样的车队将大大降低乘客的成本，改善交通状况，提高安全性，并改善空气质量。在世界高速公路上解决自主驾驶的问题可以在以后进行。</p> <h2 id="关于作者">关于作者</h2> <blockquote> <p><a href="https://www.linkedin.com/in/shaoshanliu">Shaoshan Liu</a> is the cofounder and CEO of <a href="https://www.perceptin.io/">PerceptIn</a>, an autonomous vehicle startup in Fishers, Ind.</p> <p><a href="http://engineering.uci.edu/users/jean-luc-gaudiot">Jean-Luc Gaudiot</a> is a professor of electrical engineering and computer science at the University of California, Irvine.</p> </blockquote>]]></content><author><name></name></author><category term="论文阅读"/><category term="无人车"/><category term="Lidar"/><category term="PerceptIn"/><category term="IEEE"/><summary type="html"><![CDATA[Origin Article By Shaoshan Liu and Jean-Luc Gaudiot]]></summary></entry></feed>
