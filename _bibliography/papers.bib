@@ -1,3 +1,17 @@
+@article{wen2023road,
+  title       = {On the Road with GPT-4V(ision): Early Explorations of Visual-Language Model on Autonomous Driving},
+  author      = {Licheng Wen* and Xuemeng Yang* and Daocheng Fu* and Xiaofeng Wang* and Pinlong Cai and Xin Li and Tao Ma and Yingxuan Li and Linran Xu and Dengke Shang and Zheng Zhu and Shaoyan Sun and Yeqi Bai and Xinyu Cai and Min Dou and Shuanglu Hu and Botian Shi},
+  journal     = {arXiv preprint arXiv:2311.05332},
+  year        = {2023},
+  abstract    = {The pursuit of autonomous driving technology hinges on the sophisticated integration of perception, decision-making, and control systems. Traditional approaches, both data-driven and rule-based, have been hindered by their inability to grasp the nuance of complex driving environments and the intentions of other road users. This has been a significant bottleneck, particularly in the development of common sense reasoning and nuanced scene understanding necessary for safe and reliable autonomous driving. The advent of Visual Language Models (VLM) represents a novel frontier in realizing fully autonomous vehicle driving. This report provides an exhaustive evaluation of the latest state-of-the-art VLM, \modelnamefull, and its application in autonomous driving scenarios. We explore the model's abilities to understand and reason about driving scenes, make decisions, and ultimately act in the capacity of a driver. Our comprehensive tests span from basic scene recognition to complex causal reasoning and real-time decision-making under varying conditions. Our findings reveal that \modelname demonstrates superior performance in scene understanding and causal reasoning compared to existing autonomous systems. It showcases the potential to handle out-of-distribution scenarios, recognize intentions, and make informed decisions in real driving contexts. However, challenges remain, particularly in direction discernment, traffic light recognition, vision grounding, and spatial reasoning tasks. These limitations underscore the need for further research and development.},
+  abbr        = {Preprint},
+  preview     = {on_the_road.png},
+  arxiv       = {2311.05332},
+  bibtex_show = {true},
+  code        = {https://github.com/PJLab-ADG/GPT4V-AD-Exploration},
+  selected    = {true}
+}
+
 @article{wen2023dilu,
   title        = {DiLu: A Knowledge-Driven Approach to Autonomous Driving with Large Language Models},
   author       = {Licheng Wen* and Daocheng Fu* and Xin Li* and Xinyu Cai and Tao Ma and Pinlong Cai and Min Dou and Botian Shi and Liang He and Yu Qiao},
@@ -26,16 +40,15 @@
   selected     = {false}
 }
 
-@article{fu2023drive,
+@inproceedings{fu2023drive,
   title       = {Drive Like a Human: Rethinking Autonomous Driving with Large Language Models},
   author      = {Daocheng Fu* and Xin Li* and Licheng Wen* and Min Dou and Pinlong Cai and Botian Shi and Yu Qiao},
-  journal     = {arXiv preprint arXiv:2307.07162},
-  year        = {2023},
+  booktitle   = {Proceedings of the IEEE/CVF Winter Conference on Applications of Computer Vision (WACV) Workshops},
+  year        = {2024},
   abstract    = {In this paper, we explore the potential of using a large language model (LLM) to understand the driving environment in a human-like manner and analyze its ability to reason, interpret, and memorize when facing complex scenarios. We argue that traditional optimization-based and modular autonomous driving (AD) systems face inherent performance limitations when dealing with long-tail corner cases. To address this problem, we propose that an ideal AD system should drive like a human, accumulating experience through continuous driving and using common sense to solve problems. To achieve this goal, we identify three key abilities necessary for an AD system: reasoning, interpretation, and memorization. We demonstrate the feasibility of employing an LLM in driving scenarios by building a closed-loop system to showcase its comprehension and environment-interaction abilities. Our extensive experiments show that the LLM exhibits the impressive ability to reason and solve long-tailed cases, providing valuable insights for the development of human-like autonomous driving.},
-  abbr        = {Preprint},
+  abbr        = {WS@WACV},
   arxiv       = {2307.07162},
   code        = {https://github.com/PJLab-ADG/DriveLikeAHuman},
-  demo        = {https://huggingface.co/spaces/Wayne-lc/drive_like_human},
   bibtex_show = {true},
   selected    = {false}
 }
@@ -156,6 +169,7 @@
   keywords    = {Multi-agent reinforcement learning, Neural network, Multi-agent systems, Navigation planning},
   abstract    = {Sharing network parameters between agents is an essential and typical operation to improve the scalability of multi-agent reinforcement learning algorithms. However, agents with different tasks sharing the same network parameters are not conducive to distinguishing the agents' skills. In addition, the importance of communication between agents undertaking the same task is much higher than that with external agents. Therefore, we propose Dual Cooperation Networks (DCN). In order to distinguish whether agents undertake the same task, all agents are grouped according to their status through the graph neural network instead of the traditional proximity. The agent communicates within the group to achieve strong cooperation. After that, the global value function is decomposed by groups to facilitate cooperation between groups. Finally, we have verified it in simulation and physical hardware, and the algorithm has achieved excellent performance.},
   bibtex_show = {true},
+  abbr        = {J.INS},
   selected    = {false}
 }
 
