@@ -2,6 +2,28 @@
 layout: default
 ---
 
+<head>
+  <style>
+    .clustrmaps-container {
+      display: flex;
+      /* Use Flexbox for alignment */
+      justify-content: center;
+      /* Center horizontally */
+      align-items: center;
+      /* Center vertically */
+    }
+
+    .clustrmaps-globe {
+      width: 50%;
+      /* Adjust the width as needed */
+      height: auto;
+      /* Keeps the aspect ratio intact */
+      overflow: hidden;
+      /* In case of overflow */
+    }
+  </style>
+</head>
+
 <!-- about.html -->
 <div class="post">
   <header class="post-header">
@@ -73,5 +95,12 @@ layout: default
     </div>
     {%- endif %}
   </article>
+</div>
 
+<div class="clustrmaps-container">
+  <div class="clustrmaps-globe">
+    <p></p>
+    <script type="text/javascript" id="clustrmaps"
+      src="//cdn.clustrmaps.com/map_v2.js?cl=080808&w=a&t=tt&d=DdK4bEleGev5v27ZMB_jXRGpdDwAE3KnulBHdoyl8Ps&co=ffffff&cmo=3acc3a&cmn=ff5353&ct=808080"></script>
+  </div>
 </div>
