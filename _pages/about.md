@@ -23,11 +23,9 @@ social: true # includes social icons at the bottom of the page
 
 My primary focus is on resolving complex interaction and planning problems between multiple vehicles in autonomous driving. I am also a firm believer in the eventual realization of both autonomous driving and artificial general intelligence (AGI), and I am excited to be a part of this rapidly evolving field.
 
-
-The following are my current research interests. See also [list of publications](/publications).
-
+The following are my current research interests:
+<!-- See also [list of publications](/publications). -->
 - Autonomous Driving
-- Human-like Decision Making
 - Emobodied AI
 - Mobile Robots
 
