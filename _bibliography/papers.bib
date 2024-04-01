@@ -24,15 +24,28 @@
 }
 
 
+@inproceedings{fu2024limsim,
+  title        = {LimSim++: A Closed-Loop Platform for Deploying Multimodal LLMs in Autonomous Driving},
+  author       = {Daocheng Fu* and Wenjie Lei* and Licheng Wen and Pinlong Cai and Song Mao and Min Dou and Botian Shi and Yu Qiao},
+  booktitle    = {2024 IEEE Intelligent Vehicles Symposium (IV)},
+  year         = {2024},
+  organization = {IEEE},
+  abstract     = {The emergence of Multimodal Large Language Models ((M)LLMs) has ushered in new avenues in artificial intelligence, particularly for autonomous driving by offering enhanced understanding and reasoning capabilities. This paper introduces LimSim++, an extended version of LimSim designed for the application of (M)LLMs in autonomous driving. Acknowledging the limitations of existing simulation platforms, LimSim++ addresses the need for a long-term closed-loop infrastructure supporting continuous learning and improved generalization in autonomous driving. The platform offers extended-duration, multi-scenario simulations, providing crucial information for (M)LLM-driven vehicles. Users can engage in prompt engineering, model evaluation, and framework enhancement, making LimSim++ a versatile tool for research and practice. This paper additionally introduces a baseline (M)LLM-driven framework, systematically validated through quantitative experiments across diverse scenarios. },
+  abbr         = {IV},
+  arxiv        = {2402.01246},
+  bibtex_show  = {true},
+  code         = {https://github.com/PJLab-ADG/LimSim/tree/LimSim_plus},
+  demo         = {https://pjlab-adg.github.io/limsim_plus/}
+}
 
-@article{wen2023dilu,
+@inproceedings{wen2023dilu,
   title        = {DiLu: A Knowledge-Driven Approach to Autonomous Driving with Large Language Models},
   author       = {Licheng Wen* and Daocheng Fu* and Xin Li* and Xinyu Cai and Tao Ma and Pinlong Cai and Min Dou and Botian Shi and Liang He and Yu Qiao},
-  year         = {2023},
-  journal      = {arXiv preprint arXiv:2309.16292},
+  booktitle    = {The Eleventh International Conference on Learning Representations (ICLR)},
+  year         = {2024},
   primaryclass = {cs.RO},
   abstract     = {Recent advancements in autonomous driving have relied on data-driven approaches, which are widely adopted but face challenges including dataset bias, overfitting, and uninterpretability. Drawing inspiration from the knowledge-driven nature of human driving, we explore the question of how to instill similar capabilities into autonomous driving systems and summarize a paradigm that integrates an interactive environment, a driver agent, as well as a memory component to address this question. Leveraging large language models with emergent abilities, we propose the DiLu framework, which combines a Reasoning and a Reflection module to enable the system to perform decision-making based on common-sense knowledge and evolve continuously. Extensive experiments prove DiLu's capability to accumulate experience and demonstrate a significant advantage in generalization ability over reinforcement learning-based methods. Moreover, DiLu is able to directly acquire experiences from real-world datasets which highlights its potential to be deployed on practical autonomous driving systems. To the best of our knowledge, we are the first to instill knowledge-driven capability into autonomous driving systems from the perspective of how humans drive.},
-  abbr         = {Preprint},
+  abbr         = {ICLR},
   arxiv        = {2309.16292},
   bibtex_show  = {true},
   code         = {https://github.com/PJLab-ADG/DiLu},
