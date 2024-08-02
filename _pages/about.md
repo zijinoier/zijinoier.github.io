@@ -19,13 +19,13 @@ selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 ---
 
- I am currently a young researcher in  <a href="https://pjlab-adg.github.io/">ADLab</a> at <a href="https://www.shlab.org.cn/">Shanghai AI Laboratory</a>. I graduated from [Zhejiang University](https://www.zju.edu.cn/english/) with a MSc degree in 2022, as a member of <a href="https://april.zju.edu.cn/"> APRIL Lab</a> under the mentorship of  <a href="https://person.zju.edu.cn/yongliu">Dr. Yong Liu</a>. Prior to this, I got my bachelor's degree from Zhejiang University in 2019.
+ I am currently a young researcher in  <a href="https://pjlab-adg.github.io/">ADLab</a> at <a href="https://www.shlab.org.cn/">Shanghai AI Laboratory</a>. I earned my MSc degree from [Zhejiang University](https://www.zju.edu.cn/english/) in 2022, where I was a member of the [APRIL Lab](https://april.zju.edu.cn/) under the guidance of [Dr. Yong Liu](https://person.zju.edu.cn/yongliu). Prior to this, I got my bachelor's degree from Zhejiang University in 2019.
 
-My primary focus is on resolving complex interaction and planning problems between multiple vehicles in autonomous driving. I am also a firm believer in the eventual realization of both autonomous driving and artificial general intelligence (AGI), and I am excited to be a part of this rapidly evolving field.
+My research centers on addressing complex interaction challenges through closed-loop knowledge-driven autonomous driving. I am passionate about the future of autonomous driving and artificial general intelligence (AGI), and I am thrilled to contribute to these rapidly advancing fields.
 
+### Research Interests
 The following are my current research interests:
 <!-- See also [list of publications](/publications). -->
 - Autonomous Driving
 - Emobodied AI
 - Mobile Robots
-
