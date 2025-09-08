@@ -6,5 +6,3 @@ inline: true
 
 🎉 Paper <a href="http://arxiv.org/abs/2405.15324">Continuously Learning, Adapting, and Improving: A Dual-Process Approach to Autonomous Driving</a> is accepted by <i>NeurIPS 2024</i> ! <br>
 
-📢 We have also developed a closed-loop high-fidelity simulation platform called [DriveArena](http://arxiv.org/abs/2408.00415)!
-
