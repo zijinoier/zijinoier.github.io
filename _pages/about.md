@@ -29,4 +29,5 @@ My prior work centered on addressing complex interaction challenges in autonomou
 <!-- See also [list of publications](/publications). -->
 - AI Agents
 - Multimodal Foundation Models
+- Multi-Agent System
 - Autonomous Driving
