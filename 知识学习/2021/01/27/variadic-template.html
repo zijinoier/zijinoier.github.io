@@ -1,0 +1,288 @@
+<!DOCTYPE html> <html lang="en"> <head> <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"> <meta charset="utf-8"> <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> <meta http-equiv="X-UA-Compatible" content="IE=edge"> <title>泛化之美--C++11可变模版参数的妙用 | Licheng Wen</title> <meta name="author" content="Licheng Wen"> <meta name="description" content="Personal website of Licheng Wen, a researcher in the field of autonomous driving and multi-agent systems. "> <meta name="keywords" content="wen licheng, licheng, jekyll, academic-website, personal website, portfolio-website"> <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha256-DF7Zhf293AJxJNTmh5zhoYYIMs2oXitRfBjY+9L//AY=" crossorigin="anonymous"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/css/mdb.min.css" integrity="sha256-jpjYvU3G3N6nrrBwXJoVEYI/0zw8htfFnhT9ljN3JJw=" crossorigin="anonymous"> <link defer rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.21.4/dist/bootstrap-table.min.css"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" integrity="sha256-HtsXJanqjKTc8vVQjO4YMhiqFoXkfBsjBWcX91T1jr8=" crossorigin="anonymous"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha256-i1+4qU2G2860dGGIOJscdC30s9beBXjFfzjWLjBRsBg=" crossorigin="anonymous"> <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/github.css" media="" id="highlight_theme_light"> <link rel="shortcut icon" href="data:image/svg+xml,&lt;svg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%20100%20100%22&gt;&lt;text%20y=%22.9em%22%20font-size=%2290%22&gt;%F0%9F%91%A8%E2%80%8D%F0%9F%92%BB&lt;/text&gt;&lt;/svg&gt;"> <link rel="stylesheet" href="/assets/css/main.css"> <link rel="canonical" href="https://wenlc.cn/%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0/2021/01/27/variadic-template.html"> <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jwarby/jekyll-pygments-themes@master/native.css" media="none" id="highlight_theme_dark"> <script src="/assets/js/theme.js"></script> <script src="/assets/js/dark_mode.js"></script> </head> <body class="fixed-top-nav sticky-bottom-footer"> <header> <nav id="navbar" class="navbar navbar-light navbar-expand-sm fixed-top"> <div class="container"> <a class="navbar-brand title font-weight-lighter" href="/"><span class="font-weight-bold">Licheng </span>Wen</a> <button class="navbar-toggler collapsed ml-auto" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar top-bar"></span> <span class="icon-bar middle-bar"></span> <span class="icon-bar bottom-bar"></span> </button> <div class="collapse navbar-collapse text-right" id="navbarNav"> <ul class="navbar-nav ml-auto flex-nowrap"> <li class="nav-item "> <a class="nav-link" href="/">About</a> </li> <li class="nav-item "> <a class="nav-link" href="/publications/">Publications</a> </li> <li class="nav-item "> <a class="nav-link" target="_blank" href="/assets/pdf/LichengWen_resume.pdf">CV</a> </li> <li class="toggle-container"> <button id="light-toggle" title="Change theme"> <i class="fas fa-moon"></i> <i class="fas fa-sun"></i> </button> </li> </ul> </div> </div> </nav> <progress id="progress" value="0"> <div class="progress-container"> <span class="progress-bar"></span> </div> </progress> </header> <div class="container mt-5"> <div class="post"> <header class="post-header"> <h1 class="post-title">泛化之美--C++11可变模版参数的妙用</h1> <p class="post-meta">January 27, 2021</p> <p class="post-tags"> <a href="/blog/2021"> <i class="fas fa-calendar fa-sm"></i> 2021 </a>   ·   <a href="/blog/tag/c"> <i class="fas fa-hashtag fa-sm"></i> c++</a>   <a href="/blog/tag/c-11"> <i class="fas fa-hashtag fa-sm"></i> c++11</a>   <a href="/blog/tag/%E5%8F%AF%E5%8F%98%E5%8F%82%E6%95%B0"> <i class="fas fa-hashtag fa-sm"></i> 可变参数</a>   <a href="/blog/tag/%E6%A8%A1%E6%9D%BF"> <i class="fas fa-hashtag fa-sm"></i> 模板</a>     ·   <a href="/blog/category/%E7%9F%A5%E8%AF%86%E5%AD%A6%E4%B9%A0"> <i class="fas fa-tag fa-sm"></i> 知识学习</a>   </p> </header> <article class="post-content"> <div id="markdown-content"> <blockquote> <p>本文曾发表于《程序员》2015年2月刊。转载请注明出处。</p> </blockquote> <h2 id="1概述"><strong>1概述</strong></h2> <p>C++11的新特性–可变模版参数（variadic templates）是C++11新增的最强大的特性之一，它对参数进行了高度泛化，它能表示0到任意个数、任意类型的参数。相比C++98/03，类模版和函数模版中只能含固定数量的模版参数，可变模版参数无疑是一个巨大的改进。然而由于可变模版参数比较抽象，使用起来需要一定的技巧，所以它也是C++11中最难理解和掌握的特性之一。虽然掌握可变模版参数有一定难度，但是它却是C++11中最有意思的一个特性，本文希望带领读者由浅入深的认识和掌握这一特性，同时也会通过一些实例来展示可变参数模版的一些用法。 </p> <h2 id="2可变模版参数的展开"><strong>2可变模版参数的展开</strong></h2> <p>可变参数模板和普通模板的语义是一样的，只是写法上稍有区别，声明可变参数模板时需要在typename或class后面带上省略号“…”。比如我们常常这样声明一个可变模版参数：template<typename...>或者template<class...>，一个典型的可变模版参数的定义是这样的：</class...></typename...></p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template &lt;class... T&gt;
+void f(T... args);
+</code></pre></div></div> <p>　　上面的可变模版参数的定义当中，省略号的作用有两个： 1.声明一个参数包T… args，这个参数包中可以包含0到任意个模板参数； 2.在模板定义的右边，可以将参数包展开成一个一个独立的参数。</p> <p>　　上面的参数args前面有省略号，所以它就是一个可变模版参数，我们把带省略号的参数称为“参数包”，它里面包含了0到N（N&gt;=0）个模版参数。我们无法直接获取参数包args中的每个参数的，只能通过展开参数包的方式来获取参数包中的每个参数，这是使用可变模版参数的一个主要特点，也是最大的难点，即如何展开可变模版参数。</p> <p>　　可变模版参数和普通的模版参数语义是一致的，所以可以应用于函数和类，即可变模版参数函数和可变模版参数类，然而，模版函数不支持偏特化，所以可变模版参数函数和可变模版参数类展开可变模版参数的方法还不尽相同，下面我们来分别看看他们展开可变模版参数的方法。</p> <h3 id="21可变模版参数函数"><strong>2.1可变模版参数函数</strong></h3> <p>一个简单的可变模版参数函数：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span><span class="o">...</span> <span class="nc">T</span><span class="p">&gt;</span>
+<span class="kt">void</span> <span class="nf">f</span><span class="p">(</span><span class="n">T</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>    
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="k">sizeof</span><span class="p">...(</span><span class="n">args</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span> <span class="c1">//打印变参的个数</span>
+<span class="p">}</span>
+
+<span class="n">f</span><span class="p">();</span>        <span class="c1">//0</span>
+<span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>    <span class="c1">//2</span>
+<span class="n">f</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s">""</span><span class="p">);</span>    <span class="c1">//3</span>
+</code></pre></div></div> <p>上面的例子中，f()没有传入参数，所以参数包为空，输出的size为0，后面两次调用分别传入两个和三个参数，故输出的size分别为2和3。由于可变模版参数的类型和个数是不固定的，所以我们可以传任意类型和个数的参数给函数f。这个例子只是简单的将可变模版参数的个数打印出来，如果我们需要将参数包中的每个参数打印出来的话就需要通过一些方法了。展开可变模版参数函数的方法一般有两种：一种是通过递归函数来展开参数包，另外一种是通过逗号表达式来展开参数包。下面来看看如何用这两种方法来展开参数包。</p> <h4 id="211递归函数方式展开参数包"><strong>2.1.1递归函数方式展开参数包</strong></h4> <p>通过递归函数展开参数包，需要提供一个参数包展开的函数和一个递归终止函数，递归终止函数正是用来终止递归的，来看看下面的例子。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span><span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+<span class="c1">//递归终止函数</span>
+<span class="kt">void</span> <span class="nf">print</span><span class="p">()</span>
+<span class="p">{</span>
+   <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"empty"</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">//展开函数</span>
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="o">...</span><span class="nc">Args</span><span class="p">&gt;</span>
+<span class="kt">void</span> <span class="nf">print</span><span class="p">(</span><span class="n">T</span> <span class="n">head</span><span class="p">,</span> <span class="n">Args</span><span class="p">...</span> <span class="n">rest</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"parameter "</span> <span class="o">&lt;&lt;</span> <span class="n">head</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+   <span class="n">print</span><span class="p">(</span><span class="n">rest</span><span class="p">...);</span>
+<span class="p">}</span>
+
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="n">print</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">);</span>
+   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>上例会输出每一个参数，直到为空时输出empty。展开参数包的函数有两个，一个是递归函数，另外一个是递归终止函数，参数包Args…在展开的过程中递归调用自己，每调用一次参数包中的参数就会少一个，直到所有的参数都展开为止，当没有参数时，则调用非模板函数print终止递归过程。</p> <p>递归调用的过程是这样的:</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print(1,2,3,4);
+print(2,3,4);
+print(3,4);
+print(4);
+print();
+</code></pre></div></div> <p>上面的递归终止函数还可以写成这样：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template &lt;class T&gt;
+void print(T t)
+{
+   cout &lt;&lt; t &lt;&lt; endl;
+}
+</code></pre></div></div> <p>修改递归终止函数后，上例中的调用过程是这样的：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>print(1,2,3,4);
+print(2,3,4);
+print(3,4);
+print(4);
+</code></pre></div></div> <p>当参数包展开到最后一个参数时递归为止。再看一个通过可变模版参数求和的例子：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">&gt;</span>
+<span class="n">T</span> <span class="nf">sum</span><span class="p">(</span><span class="n">T</span> <span class="n">t</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">t</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="o">...</span> <span class="nc">Types</span><span class="p">&gt;</span>
+<span class="n">T</span> <span class="nf">sum</span> <span class="p">(</span><span class="n">T</span> <span class="n">first</span><span class="p">,</span> <span class="n">Types</span> <span class="p">...</span> <span class="n">rest</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">first</span> <span class="o">+</span> <span class="n">sum</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="p">(</span><span class="n">rest</span><span class="p">...);</span>
+<span class="p">}</span>
+
+<span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">);</span> <span class="c1">//10</span>
+</code></pre></div></div> <p>sum在展开参数包的过程中将各个参数相加求和，参数的展开方式和前面的打印参数包的方式是一样的。</p> <h4 id="212逗号表达式展开参数包"><strong>2.1.2逗号表达式展开参数包</strong></h4> <p>递归函数展开参数包是一种标准做法，也比较好理解，但也有一个缺点,就是必须要一个重载的递归终止函数，即必须要有一个同名的终止函数来终止递归，这样可能会感觉稍有不便。有没有一种更简单的方式呢？其实还有一种方法可以不通过递归方式来展开参数包，这种方式需要借助逗号表达式和初始化列表。比如前面print的例子可以改成这样：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">&gt;</span>
+<span class="kt">void</span> <span class="nf">printarg</span><span class="p">(</span><span class="n">T</span> <span class="n">t</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">t</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="o">...</span><span class="nc">Args</span><span class="p">&gt;</span>
+<span class="kt">void</span> <span class="nf">expand</span><span class="p">(</span><span class="n">Args</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+   <span class="kt">int</span> <span class="n">arr</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{(</span><span class="n">printarg</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="mi">0</span><span class="p">)...};</span>
+<span class="p">}</span>
+
+<span class="n">expand</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">);</span>
+</code></pre></div></div> <p>这个例子将分别打印出1,2,3,4四个数字。这种展开参数包的方式，不需要通过递归终止函数，是直接在expand函数体中展开的, printarg不是一个递归终止函数，只是一个处理参数包中每一个参数的函数。这种就地展开参数包的方式实现的关键是逗号表达式。我们知道逗号表达式会按顺序执行逗号前面的表达式，比如：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>d = (a = b, c); 
+</code></pre></div></div> <p>这个表达式会按顺序执行：b会先赋值给a，接着括号中的逗号表达式返回c的值，因此d将等于c。</p> <p>expand函数中的逗号表达式：(printarg(args), 0)，也是按照这个执行顺序，先执行printarg(args)，再得到逗号表达式的结果0。同时还用到了C++11的另外一个特性——初始化列表，通过初始化列表来初始化一个变长数组, {(printarg(args), 0)…}将会展开成((printarg(arg1),0), (printarg(arg2),0), (printarg(arg3),0), etc… )，最终会创建一个元素值都为0的数组int arr[sizeof…(Args)]。由于是逗号表达式，在创建数组的过程中会先执行逗号表达式前面的部分printarg(args)打印出参数，也就是说在构造int数组的过程中就将参数包展开了，这个数组的目的纯粹是为了在数组构造的过程展开参数包。我们可以把上面的例子再进一步改进一下，将函数作为参数，就可以支持lambda表达式了，从而可以少写一个递归终止函数了，具体代码如下：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">F</span><span class="p">,</span> <span class="k">class</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span><span class="kt">void</span> <span class="nf">expand</span><span class="p">(</span><span class="k">const</span> <span class="n">F</span><span class="o">&amp;</span> <span class="n">f</span><span class="p">,</span> <span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span><span class="n">args</span><span class="p">)</span> 
+<span class="p">{</span>
+  <span class="c1">//这里用到了完美转发，关于完美转发，读者可以参考笔者在上一期程序员中的文章《通过4行代码看右值引用》</span>
+  <span class="n">initializer_list</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">{(</span><span class="n">f</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span> <span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)),</span><span class="mi">0</span><span class="p">)...};</span>
+<span class="p">}</span>
+<span class="n">expand</span><span class="p">([](</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;},</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">);</span>
+</code></pre></div></div> <p>上面的例子将打印出每个参数，这里如果再使用C++14的新特性泛型lambda表达式的话，可以写更泛化的lambda表达式了：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>expand([](auto i){cout&lt;&lt;i&lt;&lt;endl;}, 1,2.0,”test”);
+</code></pre></div></div> <h3 id="22可变模版参数类"><strong>2.2可变模版参数类</strong></h3> <p>可变参数模板类是一个带可变模板参数的模板类，比如C++11中的元祖std::tuple就是一个可变模板类，它的定义如下：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt; class... Types &gt;
+class tuple;
+</code></pre></div></div> <p>这个可变参数模板类可以携带任意类型任意个数的模板参数：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::tuple&lt;int&gt; tp1 = std::make_tuple(1);
+std::tuple&lt;int, double&gt; tp2 = std::make_tuple(1, 2.5);
+std::tuple&lt;int, double, string&gt; tp3 = std::make_tuple(1, 2.5, “”);
+</code></pre></div></div> <p>可变参数模板的模板参数个数可以为0个，所以下面的定义也是也是合法的：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>std::tuple&lt;&gt; tp;
+</code></pre></div></div> <p>可变参数模板类的参数包展开的方式和可变参数模板函数的展开方式不同，可变参数模板类的参数包展开需要通过模板特化和继承方式去展开，展开方式比可变参数模板函数要复杂。下面我们来看一下展开可变模版参数类中的参数包的方法。</p> <h4 id="221模版偏特化和递归方式来展开参数包"><strong>2.2.1模版偏特化和递归方式来展开参数包</strong></h4> <p>可变参数模板类的展开一般需要定义两到三个类，包括类声明和偏特化的模板类。如下方式定义了一个基本的可变参数模板类：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//前向声明</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="p">;</span>
+
+<span class="c1">//基本定义</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">First</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Rest</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="o">&lt;</span><span class="n">First</span><span class="p">,</span> <span class="n">Rest</span><span class="p">...</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="k">enum</span> <span class="p">{</span> <span class="n">value</span> <span class="o">=</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">First</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">+</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">Rest</span><span class="p">...</span><span class="o">&gt;::</span><span class="n">value</span> <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="c1">//递归终止</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Last</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="o">&lt;</span><span class="n">Last</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="k">enum</span> <span class="p">{</span> <span class="n">value</span> <span class="o">=</span> <span class="k">sizeof</span> <span class="p">(</span><span class="n">Last</span><span class="p">)</span> <span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div></div> <p>　　这个Sum类的作用是在编译期计算出参数包中参数类型的size之和，通过sum&lt;int,double,short&gt;::value就可以获取这3个类型的size之和为14。这是一个简单的通过可变参数模板类计算的例子，可以看到一个基本的可变参数模板应用类由三部分组成，第一部分是：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt;typename... Args&gt; struct sum
+</code></pre></div></div> <p>它是前向声明，声明这个sum类是一个可变参数模板类；第二部分是类的定义：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt;typename First, typename... Rest&gt;
+struct Sum&lt;First, Rest...&gt;
+{
+    enum { value = Sum&lt;First&gt;::value + Sum&lt;Rest...&gt;::value };
+};
+</code></pre></div></div> <p>它定义了一个部分展开的可变模参数模板类，告诉编译器如何递归展开参数包。第三部分是特化的递归终止类：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt;typename Last&gt; struct sum&lt;last&gt;
+{
+    enum { value = sizeof (First) };
+}
+</code></pre></div></div> <p>通过这个特化的类来终止递归：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt;typename First, typename... Args&gt;struct sum;
+</code></pre></div></div> <p>这个前向声明要求sum的模板参数至少有一个，因为可变参数模板中的模板参数可以有0个，有时候0个模板参数没有意义，就可以通过上面的声明方式来限定模板参数不能为0个。上面的这种三段式的定义也可以改为两段式的，可以将前向声明去掉，这样定义：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">First</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Rest</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span>
+<span class="p">{</span>
+    <span class="k">enum</span> <span class="p">{</span> <span class="n">value</span> <span class="o">=</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">First</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">+</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">Rest</span><span class="p">...</span><span class="o">&gt;::</span><span class="n">value</span> <span class="p">};</span>
+<span class="p">};</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Last</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="o">&lt;</span><span class="n">Last</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="k">enum</span><span class="p">{</span> <span class="n">value</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Last</span><span class="p">)</span> <span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div></div> <p>上面的方式只要一个基本的模板类定义和一个特化的终止函数就行了，而且限定了模板参数至少有一个。</p> <p>递归终止模板类可以有多种写法，比如上例的递归终止模板类还可以这样写：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span> <span class="k">struct</span> <span class="nc">sum</span><span class="p">;</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">First</span><span class="p">,</span> <span class="n">typenameLast</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">sum</span><span class="o">&lt;</span><span class="n">First</span><span class="p">,</span> <span class="n">Last</span><span class="o">&gt;</span>
+<span class="p">{</span> 
+    <span class="k">enum</span><span class="p">{</span> <span class="n">value</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">First</span><span class="p">)</span> <span class="o">+</span><span class="k">sizeof</span><span class="p">(</span><span class="n">Last</span><span class="p">)</span> <span class="p">};</span>
+<span class="p">};</span>
+</code></pre></div></div> <p>在展开到最后两个参数时终止。</p> <p>还可以在展开到0个参数时终止：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>template&lt;&gt;struct sum&lt;&gt; { enum{ value = 0 }; };
+</code></pre></div></div> <p>还可以使用std::integral_constant来消除枚举定义value。利用std::integral_constant可以获得编译期常量的特性，可以将前面的sum例子改为这样：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//前向声明</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">First</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="p">;</span>
+
+<span class="c1">//基本定义</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">First</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Rest</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="o">&lt;</span><span class="n">First</span><span class="p">,</span> <span class="n">Rest</span><span class="p">...</span><span class="o">&gt;</span> <span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">integral_constant</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">First</span><span class="o">&gt;::</span><span class="n">value</span> <span class="o">+</span> <span class="n">Sum</span><span class="o">&lt;</span><span class="n">Rest</span><span class="p">...</span><span class="o">&gt;::</span><span class="n">value</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="p">};</span>
+
+<span class="c1">//递归终止</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">Last</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">Sum</span><span class="o">&lt;</span><span class="n">Last</span><span class="o">&gt;</span> <span class="o">:</span> <span class="n">std</span><span class="o">::</span><span class="n">integral_constant</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">Last</span><span class="p">)</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="p">};</span>
+<span class="n">sum</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">,</span><span class="kt">short</span><span class="o">&gt;::</span><span class="n">value</span><span class="p">;</span><span class="c1">//值为14</span>
+</code></pre></div></div> <h4 id="222继承方式展开参数包"><strong>2.2.2继承方式展开参数包</strong></h4> <p>还可以通过继承方式来展开参数包，比如下面的例子就是通过继承的方式去展开参数包：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//整型序列的定义</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">...&gt;</span>
+<span class="k">struct</span> <span class="nc">IndexSeq</span><span class="p">{};</span>
+
+<span class="c1">//继承方式，开始展开参数包</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span><span class="p">...</span> <span class="n">Indexes</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">MakeIndexes</span> <span class="o">:</span> <span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;</span> <span class="p">{};</span>
+
+<span class="c1">// 模板特化，终止展开参数包的条件</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">...</span> <span class="n">Indexes</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">MakeIndexes</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="n">typedefIndexSeq</span><span class="o">&lt;</span><span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;</span> <span class="n">type</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">using</span> <span class="n">T</span> <span class="o">=</span> <span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;::</span><span class="n">type</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span><span class="k">typeid</span><span class="p">(</span><span class="n">T</span><span class="p">).</span><span class="n">name</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>其中MakeIndexes的作用是为了生成一个可变参数模板类的整数序列，最终输出的类型是：struct IndexSeq&lt;0,1,2&gt;。</p> <p>MakeIndexes继承于自身的一个特化的模板类，这个特化的模板类同时也在展开参数包，这个展开过程是通过继承发起的，直到遇到特化的终止条件展开过程才结束。MakeIndexes&lt;1,2,3&gt;::type的展开过程是这样的：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">3</span><span class="o">&gt;</span> <span class="o">:</span> <span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">{}</span>
+<span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="o">:</span> <span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span><span class="p">{}</span>
+<span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="o">:</span> <span class="n">MakeIndexes</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="k">typedef</span> <span class="n">IndexSeq</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">&gt;</span> <span class="n">type</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>通过不断的继承递归调用，最终得到整型序列IndexSeq&lt;0, 1, 2&gt;。</p> <p>如果不希望通过继承方式去生成整形序列，则可以通过下面的方式生成。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span> <span class="n">N</span><span class="p">,</span> <span class="kt">int</span><span class="p">...</span> <span class="n">Indexes</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">MakeIndexes3</span>
+<span class="p">{</span>
+    <span class="k">using</span> <span class="n">type</span> <span class="o">=</span> <span class="k">typename</span> <span class="n">MakeIndexes3</span><span class="o">&lt;</span><span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;::</span><span class="n">type</span><span class="p">;</span>
+<span class="p">};</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">...</span> <span class="n">Indexes</span><span class="p">&gt;</span>
+<span class="k">struct</span> <span class="nc">MakeIndexes3</span><span class="o">&lt;</span><span class="mi">0</span><span class="p">,</span> <span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;</span>
+<span class="p">{</span>
+    <span class="k">typedef</span> <span class="n">IndexSeq</span><span class="o">&lt;</span><span class="n">Indexes</span><span class="p">...</span><span class="o">&gt;</span> <span class="n">type</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div> <p>我们看到了如何利用递归以及偏特化等方法来展开可变模版参数，那么实际当中我们会怎么去使用它呢？我们可以用可变模版参数来消除一些重复的代码以及实现一些高级功能，下面我们来看看可变模版参数的一些应用。</p> <h2 id="3可变参数模版消除重复代码"><strong>3可变参数模版消除重复代码</strong></h2> <p>C++11之前如果要写一个泛化的工厂函数，这个工厂函数能接受任意类型的入参，并且参数个数要能满足大部分的应用需求的话，我们不得不定义很多重复的模版定义，比如下面的代码：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T0</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">T0</span> <span class="n">arg0</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">arg0</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T0</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T1</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">T0</span> <span class="n">arg0</span><span class="p">,</span> <span class="n">T1</span> <span class="n">arg1</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T0</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T1</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T2</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">T0</span> <span class="n">arg0</span><span class="p">,</span> <span class="n">T1</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">T2</span> <span class="n">arg2</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T0</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T1</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T2</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T3</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">T0</span> <span class="n">arg0</span><span class="p">,</span> <span class="n">T1</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">T2</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">T3</span> <span class="n">arg3</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span> <span class="nc">T</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T0</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T1</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T2</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T3</span><span class="p">,</span> <span class="k">typename</span> <span class="nc">T4</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">T0</span> <span class="n">arg0</span><span class="p">,</span> <span class="n">T1</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">T2</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">T3</span> <span class="n">arg3</span><span class="p">,</span> <span class="n">T4</span> <span class="n">arg4</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">arg0</span><span class="p">,</span> <span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">,</span> <span class="n">arg3</span><span class="p">,</span> <span class="n">arg4</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="k">struct</span> <span class="nc">A</span>
+<span class="p">{</span>
+    <span class="n">A</span><span class="p">(</span><span class="kt">int</span><span class="p">){}</span>
+<span class="p">};</span>
+
+<span class="k">struct</span> <span class="nc">B</span>
+<span class="p">{</span>
+    <span class="n">B</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span><span class="kt">double</span><span class="p">){}</span>
+<span class="p">};</span>
+<span class="n">A</span><span class="o">*</span> <span class="n">pa</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">B</span><span class="o">*</span> <span class="n">pb</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">&lt;</span><span class="n">B</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+</code></pre></div></div> <p>可以看到这个泛型工厂函数存在大量的重复的模板定义，并且限定了模板参数。用可变模板参数可以消除重复，同时去掉参数个数的限制，代码很简洁， 通过可变参数模版优化后的工厂函数如下：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span><span class="o">&lt;</span><span class="k">typename</span><span class="err">…</span>  <span class="n">Args</span><span class="p">&gt;</span>
+<span class="n">T</span><span class="o">*</span> <span class="nf">Instance</span><span class="p">(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="err">…</span> <span class="n">args</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="k">new</span> <span class="n">T</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="err">…</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">A</span><span class="o">*</span> <span class="n">pa</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">&lt;</span><span class="n">A</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">B</span><span class="o">*</span> <span class="n">pb</span> <span class="o">=</span> <span class="n">Instance</span><span class="o">&lt;</span><span class="n">B</span><span class="o">&gt;</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+</code></pre></div></div> <h2 id="4可变参数模版实现泛化的delegate"><strong>4可变参数模版实现泛化的delegate</strong></h2> <p>C++中没有类似C#的委托，我们可以借助可变模版参数来实现一个。C#中的委托的基本用法是这样的：</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">delegate</span> <span class="kt">int</span> <span class="nf">AggregateDelegate</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">);</span><span class="c1">//声明委托类型</span>
+
+<span class="kt">int</span> <span class="nf">Add</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">){</span><span class="k">return</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;}</span>
+<span class="kt">int</span> <span class="nf">Sub</span><span class="p">(</span><span class="kt">int</span> <span class="n">x</span><span class="p">,</span> <span class="kt">int</span> <span class="n">y</span><span class="p">){</span><span class="k">return</span> <span class="n">x</span><span class="o">-</span><span class="n">y</span><span class="p">;}</span>
+
+<span class="n">AggregateDelegate</span> <span class="n">add</span> <span class="o">=</span> <span class="n">Add</span><span class="p">;</span>
+<span class="n">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span><span class="c1">//调用委托对象求和</span>
+<span class="n">AggregateDelegate</span> <span class="n">sub</span> <span class="o">=</span> <span class="n">Sub</span><span class="p">;</span>
+<span class="n">sub</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">);</span><span class="c1">// 调用委托对象相减</span>
+</code></pre></div></div> <p>C#中的委托的使用需要先定义一个委托类型，这个委托类型不能泛化，即委托类型一旦声明之后就不能再用来接受其它类型的函数了，比如这样用：</p> <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>int Fun(int x, int y, int z){return x+y+z;}
+int Fun1(string s, string r){return s.Length+r.Length; }
+AggregateDelegate fun = Fun; //编译报错，只能赋值相同类型的函数
+AggregateDelegate fun1 = Fun1;//编译报错，参数类型不匹配
+</code></pre></div></div> <p>这里不能泛化的原因是声明委托类型的时候就限定了参数类型和个数，在C++11里不存在这个问题了，因为有了可变模版参数，它就代表了任意类型和个数的参数了，下面让我们来看一下如何实现一个功能更加泛化的C++版本的委托（这里为了简单起见只处理成员函数的情况，并且忽略const、volatile和const volatile成员函数的处理）。</p> <div class="language-c++ highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="nc">R</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span>
+<span class="k">class</span>  <span class="nc">MyDelegate</span>
+<span class="p">{</span>
+<span class="nl">public:</span>
+    <span class="n">MyDelegate</span><span class="p">(</span><span class="n">T</span><span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="n">R</span>  <span class="p">(</span><span class="n">T</span><span class="o">::*</span><span class="n">f</span><span class="p">)(</span><span class="n">Args</span><span class="p">...)</span> <span class="p">)</span><span class="o">:</span><span class="n">m_t</span><span class="p">(</span><span class="n">t</span><span class="p">),</span><span class="n">m_f</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="p">{}</span>
+
+    <span class="n">R</span> <span class="nf">operator</span><span class="p">()(</span><span class="n">Args</span><span class="o">&amp;&amp;</span><span class="p">...</span> <span class="n">args</span><span class="p">)</span> 
+    <span class="p">{</span>
+            <span class="k">return</span> <span class="p">(</span><span class="n">m_t</span><span class="o">-&gt;*</span><span class="n">m_f</span><span class="p">)(</span><span class="n">std</span><span class="o">::</span><span class="n">forward</span><span class="o">&lt;</span><span class="n">Args</span><span class="o">&gt;</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="p">...);</span>
+    <span class="p">}</span>
+
+<span class="k">private</span><span class="o">:</span>
+    <span class="n">T</span><span class="o">*</span> <span class="n">m_t</span><span class="p">;</span>
+    <span class="n">R</span>  <span class="p">(</span><span class="n">T</span><span class="o">::*</span><span class="n">m_f</span><span class="p">)(</span><span class="n">Args</span><span class="p">...);</span>
+<span class="p">};</span>   
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">class</span> <span class="nc">T</span><span class="p">,</span> <span class="k">class</span> <span class="nc">R</span><span class="p">,</span> <span class="k">typename</span><span class="o">...</span> <span class="nc">Args</span><span class="p">&gt;</span>
+<span class="n">MyDelegate</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Args</span><span class="p">...</span><span class="o">&gt;</span> <span class="n">CreateDelegate</span><span class="p">(</span><span class="n">T</span><span class="o">*</span> <span class="n">t</span><span class="p">,</span> <span class="n">R</span> <span class="p">(</span><span class="n">T</span><span class="o">::*</span><span class="n">f</span><span class="p">)(</span><span class="n">Args</span><span class="p">...))</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">MyDelegate</span><span class="o">&lt;</span><span class="n">T</span><span class="p">,</span> <span class="n">R</span><span class="p">,</span> <span class="n">Args</span><span class="p">...</span><span class="o">&gt;</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">f</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">struct</span> <span class="nc">A</span>
+<span class="p">{</span>
+    <span class="kt">void</span> <span class="n">Fun</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
+    <span class="kt">void</span> <span class="nf">Fun1</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">double</span> <span class="n">j</span><span class="p">){</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">&lt;&lt;</span><span class="n">endl</span><span class="p">;}</span>
+<span class="p">};</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">A</span> <span class="n">a</span><span class="p">;</span>
+    <span class="k">auto</span> <span class="n">d</span> <span class="o">=</span> <span class="n">CreateDelegate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">A</span><span class="o">::</span><span class="n">Fun</span><span class="p">);</span> <span class="c1">//创建委托</span>
+    <span class="n">d</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//调用委托，将输出1</span>
+    <span class="k">auto</span> <span class="n">d1</span> <span class="o">=</span> <span class="n">CreateDelegate</span><span class="p">(</span><span class="o">&amp;</span><span class="n">a</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">A</span><span class="o">::</span><span class="n">Fun1</span><span class="p">);</span> <span class="c1">//创建委托</span>
+    <span class="n">d1</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">);</span> <span class="c1">//调用委托，将输出3.5</span>
+<span class="p">}</span>
+</code></pre></div></div> <p>MyDelegate实现的关键是内部定义了一个能接受任意类型和个数参数的“万能函数”：R (T::*m_f)(Args…)，正是由于可变模版参数的特性，所以我们才能够让这个m_f接受任意参数。</p> <h2 id="5总结"><strong>5总结</strong></h2> <p>使用可变模版参数的这些技巧相信读者看了会有耳目一新之感，使用可变模版参数的关键是如何展开参数包，展开参数包的过程是很精妙的，体现了泛化之美、递归之美，正是因为它具有神奇的“魔力”，所以我们可以更泛化的去处理问题，比如用它来消除重复的模版定义，用它来定义一个能接受任意参数的“万能函数”等。其实，可变模版参数的作用远不止文中列举的那些作用，它还可以和其它C++11特性结合起来，比如type_traits、std::tuple等特性，发挥更加强大的威力，将在后面模板元编程的应用中介绍。</p> </div> </article> </div> </div> <footer class="sticky-bottom mt-5"> <div class="container"> © Copyright 2025 Licheng Wen. Powered by <a href="https://jekyllrb.com/" target="_blank" rel="external nofollow noopener">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio" rel="external nofollow noopener" target="_blank">al-folio</a> theme.Last updated: September 09, 2025. </div> </footer> <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js" integrity="sha256-fgLAgv7fyCGopR/gBNq2iW3ZKIdqIcyshnUULC4vex8=" crossorigin="anonymous"></script> <script src="https://cdn.jsdelivr.net/npm/mdbootstrap@4.20.0/js/mdb.min.js" integrity="sha256-NdbiivsvWt7VYCt6hYNT3h/th9vSTL4EDWeGs5SN3DA=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js" integrity="sha256-Nn1q/fx0H7SNLZMQ5Hw5JLaTRZp0yILA/FRexe19VdI=" crossorigin="anonymous"></script> <script defer src="https://cdn.jsdelivr.net/npm/imagesloaded@4/imagesloaded.pkgd.min.js"></script> <script defer src="/assets/js/masonry.js" type="text/javascript"></script> <script defer src="https://cdn.jsdelivr.net/npm/medium-zoom@1.0.8/dist/medium-zoom.min.js" integrity="sha256-7PhEpEWEW0XXQ0k6kQrPKwuoIomz8R8IYyuU1Qew4P8=" crossorigin="anonymous"></script> <script defer src="/assets/js/zoom.js"></script> <script defer src="https://unpkg.com/bootstrap-table@1.21.4/dist/bootstrap-table.min.js"></script> <script src="/assets/js/no_defer.js"></script> <script defer src="/assets/js/common.js"></script> <script defer src="/assets/js/copy_code.js" type="text/javascript"></script> <script type="text/javascript">window.MathJax={tex:{tags:"ams"}};</script> <script defer type="text/javascript" id="MathJax-script" src="https://cdn.jsdelivr.net/npm/mathjax@3.2.0/es5/tex-mml-chtml.js"></script> <script defer src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script> <script async src="https://www.googletagmanager.com/gtag/js?id=G-SE6TFLVDZE"></script> <script>function gtag(){window.dataLayer.push(arguments)}window.dataLayer=window.dataLayer||[],gtag("js",new Date),gtag("config","G-SE6TFLVDZE");</script> <script type="text/javascript">function progressBarSetup(){"max"in document.createElement("progress")?(initializeProgressElement(),$(document).on("scroll",function(){progressBar.attr({value:getCurrentScrollPosition()})}),$(window).on("resize",initializeProgressElement)):(resizeProgressBar(),$(document).on("scroll",resizeProgressBar),$(window).on("resize",resizeProgressBar))}function getCurrentScrollPosition(){return $(window).scrollTop()}function initializeProgressElement(){let e=$("#navbar").outerHeight(!0);$("body").css({"padding-top":e}),$("progress-container").css({"padding-top":e}),progressBar.css({top:e}),progressBar.attr({max:getDistanceToScroll(),value:getCurrentScrollPosition()})}function getDistanceToScroll(){return $(document).height()-$(window).height()}function resizeProgressBar(){progressBar.css({width:getWidthPercentage()+"%"})}function getWidthPercentage(){return getCurrentScrollPosition()/getDistanceToScroll()*100}const progressBar=$("#progress");window.onload=function(){setTimeout(progressBarSetup,50)};</script> </body> </html>
