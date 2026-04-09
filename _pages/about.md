@@ -2,7 +2,7 @@
 layout: about
 title: About
 permalink: /
-subtitle: Multimodal LLM Researcher
+subtitle: Enthusiastic Researcher
 
 profile:
   align: right
@@ -28,6 +28,6 @@ My prior work centered on addressing complex interaction challenges in autonomou
 ### Research Interests
 <!-- See also [list of publications](/publications). -->
 - AI Agents
+- Lifelong / Continual Learning
 - Multimodal Foundation Models
 - Multi-Agent System
-- Autonomous Driving

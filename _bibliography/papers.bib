@@ -1,3 +1,54 @@
+@article{fu2026agentfirstday,
+  title       = {The Agent's First Day: Benchmarking Learning, Exploration, and Scheduling in the Workplace Scenarios},
+  author      = {Daocheng Fu* and Jianbiao Mei* and Rong Wu* and Xuemeng Yang and Jia Xu and Ding Wang and Pinlong Cai and Yong Liu and Licheng Wen and Botian Shi},
+  journal     = {Findings of the Association for Computational Linguistics (ACL)},
+  year        = {2026},
+  abstract    = {The rapid evolution of Multi-modal Large Language Models (MLLMs) has advanced workflow automation; however, existing research mainly targets performance upper bounds in static environments, overlooking robustness for stochastic real-world deployment. We identify three key challenges: dynamic task scheduling, active exploration under uncertainty, and continuous learning from experience. To bridge this gap, we introduce a dynamic evaluation environment that simulates a "trainee" agent continuously exploring a novel setting. Unlike traditional benchmarks, it evaluates agents along three dimensions: (1) context-aware scheduling for streaming tasks with varying priorities; (2) prudent information acquisition to reduce hallucination via active exploration; and (3) continuous evolution by distilling generalized strategies from rule-based, dynamically generated tasks. Experiments show that cutting-edge agents have significant deficiencies in dynamic environments, especially in active exploration and continual learning. Our work establishes a framework for assessing agent reliability, shifting evaluation from static tests to realistic, production-oriented scenarios.},
+  arxiv       = {2601.08173},
+  abbr        = {ACL Findings},
+  bibtex_show = {true},
+  code        = {https://github.com/KnowledgeXLab/EvoEnv},
+  selected    = {true}
+}
+
+@article{liu2025memverse,
+  title       = {Memverse: Multimodal Memory for Lifelong Learning Agents},
+  author      = {Junming Liu and Yifei Sun and Weihua Cheng and Haodong Lei and Yirong Chen and Licheng Wen and Xuemeng Yang and Daocheng Fu and Pinlong Cai and Nianchen Deng and Yi Yu and Shuyue Hu and Botian Shi and Ding Wang},
+  journal     = {arXiv preprint arXiv:2512.03627},
+  year        = {2025},
+  abstract    = {Despite rapid progress in large-scale language and vision models, AI agents still suffer from a fundamental limitation: they cannot remember. Without reliable memory, agents catastrophically forget past experiences, struggle with long-horizon reasoning, and fail to operate coherently in multimodal or interactive environments. We introduce MemVerse, a model-agnostic, plug-and-play memory framework that bridges fast parametric recall with hierarchical retrieval-based memory, enabling scalable and adaptive multimodal intelligence. MemVerse maintains short-term memory for recent context while transforming raw multimodal experiences into structured long-term memories organized as hierarchical knowledge graphs. This design supports continual consolidation, adaptive forgetting, and bounded memory growth. To handle real-time demands, MemVerse introduces a periodic distillation mechanism that compresses essential knowledge from long-term memory into the parametric model, allowing fast, differentiable recall while preserving interpretability. Extensive experiments demonstrate that MemVerse significantly improves multimodal reasoning and continual learning efficiency, empowering agents to remember, adapt, and reason coherently across extended interactions.},
+  arxiv       = {2512.03627},
+  abbr        = {Preprint},
+  bibtex_show = {true},
+  code        = {https://github.com/KnowledgeXLab/MemVerse},
+  selected    = {false}
+}
+
+@article{fu2025researcher,
+  title       = {RE-Searcher: Robust Agentic Search with Goal-oriented Planning and Self-reflection},
+  author      = {Daocheng Fu* and Jianbiao Mei* and Licheng Wen* and Xuemeng Yang* and Cheng Yang and Rong Wu and Tao Hu and Siqi Li and Yufan Shen and Xinyu Cai and Pinlong Cai and Botian Shi and Yong Liu and Yu Qiao},
+  journal     = {arXiv preprint arXiv:2509.26048},
+  year        = {2025},
+  abstract    = {Large language models (LLMs) excel at knowledge-intensive question answering and reasoning, yet their real-world deployment remains constrained by knowledge cutoff, hallucination, and limited interaction modalities. Augmenting LLMs with external search tools helps alleviate these issues, but it also exposes agents to a complex search environment in which small, plausible variations in query formulation can steer reasoning into unproductive trajectories and amplify errors. We present a systematic analysis that quantifies how environmental complexity induces fragile search behaviors and, in turn, degrades overall performance. To address this challenge, we propose a simple yet effective approach to instantiate a search agent, RE-Searcher. During search, RE-Searcher explicitly articulates a concrete search goal and subsequently reflects on whether the retrieved evidence satisfies that goal. This combination of goal-oriented planning and self-reflection enables RE-Searcher to resist spurious cues in complex search environments and perform robust search. Extensive experiments show that our method improves search accuracy and achieves state-of-the-art results. Perturbation studies further demonstrate substantial resilience to noisy or misleading external signals, mitigating the fragility of the search process.},
+  arxiv       = {2509.26048},
+  abbr        = {Preprint},
+  bibtex_show = {true},
+  selected    = {false}
+}
+
+@article{yang2026muse,
+  title       = {Towards Self-Evolving Agents: Enabling Autonomy through Interactive Experience Refinement},
+  author      = {Cheng Yang* and Xuemeng Yang* and Licheng Wen* and Daocheng Fu and Jianbiao Mei and Rong Wu and Pinlong Cai and Yufan Shen and Nianchen Deng and Botian Shi and Yu Qiao and Haifeng Li},
+  journal     = {Findings of the Association for Computational Linguistics (ACL)},
+  year        = {2026},
+  abstract    = {Large Language Models have demonstrated remarkable capabilities across diverse domains, yet significant challenges persist when deploying them as AI agents for real-world long-horizon tasks. Existing LLM agents suffer from a critical limitation: they are test-time static and cannot learn from experience, lacking the ability to accumulate knowledge and continuously improve on the job. To address this challenge, we propose MUSE, a novel agent framework that introduces an experience-driven, self-evolving system centered around a hierarchical Memory Module. MUSE organizes diverse levels of experience and leverages them to plan and execute long-horizon tasks across multiple applications. After each sub-task execution, the agent autonomously reflects on its trajectory, converting the raw trajectory into structured experience and integrating it back into the Memory Module. This mechanism enables the agent to evolve beyond its static pretrained parameters, fostering continuous learning and self-evolution. We evaluate MUSE on the long-horizon productivity benchmark TAC. It achieves new SOTA performance by a significant margin using only a lightweight Gemini-2.5 Flash model. Sufficient Experiments demonstrate that as the agent autonomously accumulates experience, it exhibits increasingly superior task completion capabilities, as well as robust continuous learning and self-evolution capabilities. Moreover, the accumulated experience from MUSE exhibits strong generalization properties, enabling zero-shot improvement on new tasks.},
+  arxiv       = {2510.08002},
+  abbr        = {ACL Findings},
+  bibtex_show = {true},
+  code        = {https://github.com/KnowledgeXLab/MUSE},
+  selected    = {true}
+}
+
 @article{li2023towards,
   title       = {Towards Knowledge-driven Autonomous Driving},
   author      = {Xin Li and Yeqi Bai and Pinlong Cai and Licheng Wen and Daocheng Fu and Bo Zhang and Xuemeng Yang and Xinyu Cai and Tao Ma and Jianfei Guo and Xing Gao and Min Dou and Yikang Li and Botian Shi and Yong Liu and Liang He and Yu Qiao},
