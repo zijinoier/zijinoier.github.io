@@ -5,6 +5,7 @@ If you like the theme, give it a star!
 
 ```
 bundle install
+rbenv local 3.2.0
 bundle exec jekyll serve
 bin/deploy --user
 ```
