@@ -2,123 +2,129 @@
 layout: default
 ---
 
-<head>
-  <style>
-    .clustrmaps-container {
-      display: flex;
-      /* Use Flexbox for alignment */
-      justify-content: center;
-      /* Center horizontally */
-      align-items: center;
-      /* Center vertically */
-    }
+<div class="home-notebook">
+  <section class="notebook-hero" aria-labelledby="home-title">
+    <div class="hero-main">
+      <h1 id="home-title" class="hero-title">
+        {% if site.title == "blank" -%}
+          {{ site.first_name }}{% if site.middle_name %} {{ site.middle_name }}{% endif %} {{ site.last_name }}
+        {%- else -%}
+          {{ site.title }}
+        {%- endif %}
+      </h1>
 
-    .clustrmaps-globe {
-      width: 50%;
-      /* Adjust the width as needed */
-      height: auto;
-      /* Keeps the aspect ratio intact */
-      overflow: hidden;
-      /* In case of overflow */
-    }
-  </style>
-</head>
+      <p class="hero-subtitle">
+        {{ page.hero.statement.line_1 }}<br>
+        {{ page.hero.statement.line_2 }} <span>{{ page.hero.statement.emphasis }}</span>.
+      </p>
 
-<!-- about.html -->
-<div class="post">
-  <header class="post-header">
-    <h1 class="post-title">
-      {% if site.title == "blank" -%}<span class="font-weight-bold">{{ site.first_name }}</span> {{ site.middle_name }}
-      {{ site.last_name }}{%- else -%}{{ site.title }}{%- endif %}
-    </h1>
-    <p class="desc">{{ page.subtitle }}</p>
-  </header>
-
-  <article>
-    {% if page.profile -%}
-    <div class="profile float-{%- if page.profile.align == 'left' -%}left{%- else -%}right{%- endif -%}">
-      {%- if page.profile.image %}
-      {%- assign profile_image_path = page.profile.image | prepend: 'assets/img/' -%}
-
-      {% if page.profile.image_circular %}
-      {%- assign profile_image_class = "img-fluid z-depth-1 rounded-circle" -%}
-      {% else %}
-      {%- assign profile_image_class = "img-fluid z-depth-1 rounded" -%}
+      {% if page.research_tags %}
+        <ul class="hero-tags" aria-label="Research areas">
+          {% for tag in page.research_tags %}
+            <li>{{ tag }}</li>
+          {% endfor %}
+        </ul>
       {% endif %}
-
-      {% include figure.html
-      path=profile_image_path
-      class=profile_image_class
-      alt=page.profile.image -%}
-      {% endif -%}
-      {%- if page.profile.address %}
-      <div class="address">
-        {{ page.profile.address }}
-      </div>
-      {%- endif %}
     </div>
-    {%- endif %}
 
-    <div class="clearfix">
+    <aside class="hero-portrait-panel" aria-label="Research portrait">
+      {% if page.profile and page.profile.image %}
+        {%- assign profile_image_path = page.profile.image | prepend: 'assets/img/' | relative_url -%}
+        <figure class="hero-portrait">
+          <img src="{{ profile_image_path }}" alt="{{ site.first_name }} {{ site.last_name }}">
+        </figure>
+      {% endif %}
+      <p class="hero-note">{{ page.hero.note }}</p>
+    </aside>
+  </section>
+
+  {%- assign intro_content = content | strip -%}
+  {% if intro_content != "" %}
+    <section class="home-intro" aria-label="Research introduction">
       {{ content }}
+    </section>
+  {% endif %}
+
+  <section class="research-manifesto" aria-labelledby="manifesto-title">
+    <div>
+      <p class="section-label">{{ page.sections.manifesto.label }}</p>
+      <h2 id="manifesto-title">{{ page.sections.manifesto.title }}</h2>
+      <p>{{ page.manifesto.body }}</p>
     </div>
+    <aside>
+      <p>{{ page.manifesto.note }}</p>
+    </aside>
+  </section>
 
-    <!-- News -->
-    {% if page.news and site.announcements.enabled -%}
-    <h2><a href="{{ '/news/' | relative_url }}" style="color: inherit;">News</a></h2>
-    {%- include news.html limit=true %}
-    {%- endif %}
-
-    <!-- Latest posts -->
-    {% if page.latest_posts -%}
-    <h2><a href="{{ '/blog/' | relative_url }}" style="color: inherit;">Latest Posts</a></h2>
-    {%- include latest_posts.html %}
-    {%- endif %}
-
-    <!-- Selected papers -->
-    {% if page.selected_papers -%}
-    <h2><a href="{{ '/publications/' | relative_url }}" style="color: inherit;">Selected Publications</a></h2>
-    {%- include selected_papers.html %}
-    {%- endif %}
-
-    <h2 id="service" style="color: inherit;">Talks</h2>
-    
-    <p>
-      On October 31st, 2024, I had the honor of presenting a talk titled 
-      <strong>"Empowering Automated Driving with LLMs: A Knowledge-driven Paradigm"</strong> 
-      to <a href="https://www.sae.org/" target="_blank" rel="noopener noreferrer">SAE International</a> 
-      as part of their AI Webinar series.
-    </p>
-    <div class="video-container">
-      <iframe width="100%" height="400"  src="https://www.youtube.com/embed/SfW0quOEzLM?si=CU9a07laEphTYHKN" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  <section class="research-threads-section" aria-labelledby="threads-title">
+    <div class="section-heading-wide">
+      <p class="section-label">{{ page.sections.threads.label }}</p>
+      <h2 id="threads-title">{{ page.sections.threads.title }}</h2>
+      <p>{{ page.sections.threads.body }}</p>
     </div>
+    <div class="thread-list">
+      {% for thread in page.research_threads %}
+        <article class="thread-item">
+          <span class="thread-index">0{{ forloop.index }}</span>
+          <div>
+            <h3>{{ thread.label }}</h3>
+            <p>{{ thread.detail }}</p>
+            {% if thread.keywords %}
+              <ul class="thread-keywords" aria-label="{{ thread.label }} keywords">
+                {% for keyword in thread.keywords %}
+                  <li>{{ keyword }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
 
+  <section class="selected-work-section" aria-labelledby="selected-work-title">
+    <div class="section-heading">
+      <p class="section-label">{{ page.sections.selected_papers.label }}</p>
+      <h2 id="selected-work-title">{{ page.sections.selected_papers.title }}</h2>
+    </div>
+    <article class="papers-panel">
+      {% include home_selected_papers.html %}
+      <a href="{{ '/publications/' | relative_url }}">Publications</a>
+    </article>
+  </section>
 
-    <p></p>
+  {% if page.talks %}
+    <section class="talk-section" aria-labelledby="talks-title">
+      <div class="section-heading">
+        <p class="section-label">{{ page.sections.talks.label }}</p>
+        <h2 id="talks-title">{{ page.sections.talks.title }}</h2>
+      </div>
+      <div class="talk-list">
+        {% for talk in page.talks %}
+          <article class="talk-card">
+            <div>
+              <p class="talk-meta">{{ talk.date }} / {{ talk.venue }}</p>
+              <h3>{{ talk.title }}</h3>
+            </div>
+            {% if talk.embed %}
+              <div class="video-container talk-video">
+                <iframe width="100%" height="360" src="{{ talk.embed }}" title="{{ talk.title }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+              </div>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
 
-    <p></p>
-    <hr style="width: 100%; margin: 40px 0;">
-
-    <!-- Social -->
-    {%- if page.social %}
-    <div class="social">
+  {% if page.social %}
+    <section class="home-contact" aria-label="Contact">
       <div class="contact-icons">
         {% include social.html %}
       </div>
-
       <div class="contact-note">
         {{ site.contact_note }}
       </div>
-
-    </div>
-    {%- endif %}
-  </article>
-</div>
-
-<div class="clustrmaps-container">
-  <div class="clustrmaps-globe">
-    <p></p>
-    <script type="text/javascript" id="clustrmaps"
-      src="//cdn.clustrmaps.com/map_v2.js?cl=080808&w=a&t=tt&d=DdK4bEleGev5v27ZMB_jXRGpdDwAE3KnulBHdoyl8Ps&co=ffffff&cmo=3acc3a&cmn=ff5353&ct=808080"></script>
-  </div>
+    </section>
+  {% endif %}
 </div>

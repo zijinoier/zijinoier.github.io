@@ -8,7 +8,7 @@ middle_name:
 last_name: Wen
 email:  # your email address
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
-  Personal website of Licheng Wen, a researcher in the field of autonomous driving and multi-agent systems.
+  Personal website of Licheng Wen, a researcher working on AI agents, continual learning, and adaptive decision-making systems.
 footer_text: Powered by <a href="https://jekyllrb.com/" target="_blank">Jekyll</a> with <a href="https://github.com/alshedivat/al-folio">al-folio</a> theme. # text displayed in the footer section (supports HTML)
 
 keywords: wen licheng, licheng, jekyll, academic-website, personal website, portfolio-website # add your own keywords or leave empty
@@ -169,7 +169,7 @@ collections:
     output: true
     permalink: /news/:path/
   projects:
-    output: true
+    output: false
     permalink: /projects/:path/
 
 announcements:
@@ -202,9 +202,17 @@ kramdown:
 # Includes & excludes
 include: ["_pages"]
 exclude:
+  - .all-contributorsrc
+  - .pre-commit-config.yaml
   - bin
+  - CONTRIBUTING.md
+  - Dockerfile
+  - docker-compose.yml
+  - docker-local.yml
   - Gemfile
   - Gemfile.lock
+  - LICENSE
+  - README.md
   - vendor
 keep_files:
   - CNAME
