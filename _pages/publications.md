@@ -7,8 +7,30 @@ nav: true
 nav_order: 1
 ---
 <!-- _pages/publications.md -->
-<div class="publications">
+<div class="publication-notebook">
+  <section class="publication-hero" aria-labelledby="publications-title">
+    <div>
+      <p class="section-label">Publications</p>
+      <h1 id="publications-title">Papers, systems, and field notes.</h1>
+      <p>
+        A reverse-chronological record of work on agents that remember, reason,
+        interact, and improve through feedback.
+      </p>
+    </div>
+    <aside>
+      <p>Reverse chronological. <span>*</span> denotes equal contribution.</p>
+    </aside>
+  </section>
 
-{% bibliography -f {{ site.scholar.bibliography }} %}
+  <section class="publication-list-section" aria-label="Publication list">
+    <div class="publication-side">
+      <p class="section-label">Bibliography</p>
+      <h2>Research line, by year.</h2>
+      <p>Agents, memory, embodied interaction, autonomous driving, and industrial intelligence.</p>
+    </div>
+    <div class="publications publication-list">
+      {% bibliography -f {{ site.scholar.bibliography }} %}
+    </div>
+  </section>
 
 </div>

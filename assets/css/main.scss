@@ -7,4 +7,5 @@
 @use "layout" with ($max-content-width: {{ site.max_width }});
 @use "base";
 @use "home";
+@use "publications";
 @use "distill";
