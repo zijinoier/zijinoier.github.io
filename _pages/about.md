@@ -5,7 +5,7 @@ permalink: /
 subtitle: I study agents that remember, reason, and adapt.
 
 profile:
-  image: hero-portrait-from-profile.png
+  image: hero-portrait-transparent-v2.png
 
 hero:
   statement:
@@ -62,7 +62,7 @@ talks:
 
 manifesto:
   body: "I believe the next generation of AI will be defined not by scale alone, but by the ability to remember, reason, and adapt over time in the world. My goal is to build agents that are capable, dependable, and genuinely useful in environments where actions must be executed, verified, and improved."
-  note: "Not just stronger models. Better learners. Better teammates."
+  note: "Not just stronger models. <br>Better learners. Better teammates."
 
 social: true
 ---

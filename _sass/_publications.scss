@@ -6,6 +6,7 @@
   --paper: #fbfaf5;
   --ink: #171717;
   --muted: #62605a;
+  --venue: #4d4941;
   --line: rgba(23, 23, 23, 0.2);
   --hairline: rgba(23, 23, 23, 0.08);
   --blue: #243f88;
@@ -25,6 +26,7 @@ body:has(.publication-notebook) {
   --paper: #fbfaf5;
   --ink: #171717;
   --muted: #62605a;
+  --venue: #4d4941;
   --line: rgba(23, 23, 23, 0.2);
   --hairline: rgba(23, 23, 23, 0.08);
   --blue: #243f88;
@@ -38,6 +40,35 @@ body:has(.publication-notebook) {
   background-size: 40px 40px, 40px 40px, auto, auto;
 }
 
+html[data-theme='dark'] body:has(.publication-notebook) {
+  --paper: #11100d;
+  --ink: #f2eadc;
+  --muted: #b8ad9c;
+  --venue: #d2c7b8;
+  --line: rgba(242, 234, 220, 0.2);
+  --hairline: rgba(242, 234, 220, 0.1);
+  --blue: #9fb8ff;
+  --red: #f07a5f;
+
+  background:
+    linear-gradient(rgba(159, 184, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(159, 184, 255, 0.018) 1px, transparent 1px),
+    radial-gradient(circle at 18% 4%, rgba(240, 122, 95, 0.09), transparent 32rem),
+    var(--paper);
+  background-size: 40px 40px, 40px 40px, auto, auto;
+}
+
+html[data-theme='dark'] .publication-notebook {
+  --paper: #11100d;
+  --ink: #f2eadc;
+  --muted: #b8ad9c;
+  --venue: #d2c7b8;
+  --line: rgba(242, 234, 220, 0.2);
+  --hairline: rgba(242, 234, 220, 0.1);
+  --blue: #9fb8ff;
+  --red: #f07a5f;
+}
+
 body:has(.publication-notebook) .container {
   max-width: 1180px;
 }
@@ -48,6 +79,23 @@ body:has(.publication-notebook) .navbar {
   box-shadow: 0 1px 0 rgba(23, 23, 23, 0.02);
   opacity: 1;
   z-index: 1040;
+}
+
+body:has(.publication-notebook) .navbar.navbar-light .navbar-brand,
+body:has(.publication-notebook) .navbar.navbar-light .navbar-nav .nav-item .nav-link {
+  color: var(--ink);
+}
+
+body:has(.publication-notebook) .navbar.navbar-light .navbar-nav .nav-item.active > .nav-link {
+  color: var(--red);
+}
+
+body:has(.publication-notebook) #light-toggle {
+  color: var(--ink);
+}
+
+body:has(.publication-notebook) #light-toggle:hover {
+  color: var(--red);
 }
 
 body:has(.publication-notebook) .post-header {
@@ -205,7 +253,7 @@ body:has(.publication-notebook) .post-header {
 .publication-list abbr.badge {
   display: inline-block;
   padding: 0.22rem 0.42rem;
-  border: 1px solid rgba(36, 63, 136, 0.26);
+  border: 1px solid var(--line);
   border-radius: 4px;
   background: transparent !important;
   box-shadow: none !important;
@@ -242,8 +290,9 @@ body:has(.publication-notebook) .post-header {
 .publication-list .author {
   max-width: 50rem;
   margin-top: 0.35rem;
-  color: var(--muted);
+  color: var(--venue);
   font-size: 0.92rem;
+  font-weight: 600;
   line-height: 1.45;
 }
 
@@ -258,11 +307,17 @@ body:has(.publication-notebook) .post-header {
   font-style: normal;
 }
 
+.publication-list .author > span.more-authors {
+  color: var(--muted) !important;
+  border-bottom-color: var(--line) !important;
+}
+
 .publication-list .periodical {
   max-width: 48rem;
   margin-top: 0.25rem;
-  color: var(--muted);
+  color: var(--venue);
   font-size: 0.88rem;
+  font-weight: 600;
   line-height: 1.4;
 }
 

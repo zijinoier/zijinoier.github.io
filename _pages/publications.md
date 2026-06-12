@@ -13,13 +13,12 @@ nav_order: 1
       <p class="section-label">Publications</p>
       <h1 id="publications-title">Papers, systems, and field notes.</h1>
       <p>
-        A reverse-chronological record of work on agents that remember, reason,
-        interact, and improve through feedback.
+        Reverse chronological. <br> <span>*</span> denotes equal contribution.
       </p>
     </div>
-    <aside>
-      <p>Reverse chronological. <span>*</span> denotes equal contribution.</p>
-    </aside>
+    <!-- <aside>
+      <p>Reverse chronological. <br> <span>*</span> denotes equal contribution.</p>
+    </aside> -->
   </section>
 
   <section class="publication-list-section" aria-label="Publication list">
